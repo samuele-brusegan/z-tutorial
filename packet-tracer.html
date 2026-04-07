@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cisco Packet Tracer &mdash; Guida CLI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pt-styles.css">
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="." class="nav-logo">PT { }</a>
+            <a href="index.php" class="nav-logo" style="margin-left:-0.5rem;opacity:.4;font-size:.8rem;">&larr; Tutti</a>
+            <div class="nav-links">
+                <a class="nav-link active" data-page="intro">Introduzione</a>
+                <a class="nav-link" data-page="cli-router">Router CLI</a>
+                <a class="nav-link" data-page="cli-switch">Switch CLI</a>
+                <a class="nav-link" data-page="rip-v2">RIPv2</a>
+                <a class="nav-link" data-page="dhcp-helper">DHCP + IP Helper</a>
+                <a class="nav-link" data-page="quiz">Quiz</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- HERO -->
+        <header class="hero" id="hero">
+            <div class="hero-badge">ITIS ZUCCANTE &mdash; 4IB</div>
+            <h1>Cisco Packet Tracer: <span class="highlight">da zero alla CLI</span></h1>
+            <p class="hero-sub">
+                Configura router, switch, RIPv2 e DHCP con IP Helper.<br>
+                Ogni pagina ha una <strong>CLI simulata</strong> dove puoi digitare i comandi.
+            </p>
+        </header>
+
+        <!-- ============ PAGE 1: INTRO ============ -->
+        <section class="section page" id="page-intro" data-index="1">
+            <div class="section-number">1</div>
+            <h2>I comandi base della CLI</h2>
+            <p>
+                La CLI di Cisco IOS ha una struttura gerarchica. La regola &egrave; sempre:
+                <strong>entra</strong> con <code>enable</code>, <strong>configura</strong> con
+                <code>configure terminal</code>, <strong>esci</strong> con <code>end</code>.
+            </p>
+
+            <div class="cli-mode-diagram" id="cli-mode-diagram">
+                <div class="cli-node active" data-mode="user" id="mode-user">
+                    <div class="cli-node-name">User Exec</div>
+                    <div class="cli-node-prompt">Router&gt;</div>
+                    <div class="cli-node-icon" style="color:#8b949e;">&gt;</div>
+                </div>
+                <span class="cli-arrow" id="arrow-1" style="color:#8b949e;">enable <span class="arrow-bullet">&rarr;</span></span>
+                <div class="cli-node" data-mode="priv" id="mode-priv">
+                    <div class="cli-node-name">Privileged Exec</div>
+                    <div class="cli-node-prompt">Router#</div>
+                    <div class="cli-node-icon" style="color:var(--pt-blue);">#</div>
+                </div>
+                <span class="cli-arrow" id="arrow-2" style="color:#8b949e;">conf t <span class="arrow-bullet">&rarr;</span></span>
+                <div class="cli-node" data-mode="global" id="mode-global">
+                    <div class="cli-node-name">Global Config</div>
+                    <div class="cli-node-prompt">(config)#</div>
+                    <div class="cli-node-icon" style="color:#3fb950;">(config)</div>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    Riepilogo comandi di navigazione
+                </div>
+                <pre><span class="cn">Router&gt;</span> <span class="at">enable</span>              <span class="cm"># Entra in Privileged Exec</span>
+<span class="cn">Router#</span> <span class="at">configure terminal</span>  <span class="cm"># Entra in Global Config</span>
+<span class="cn">Router(config)#</span> <span class="at">end</span>       <span class="cm"># Esci direttamente a Privileged</span>
+<span class="cn">Router(config)#</span> <span class="at">exit</span>      <span class="cm"># Torna indietro di un livello</span>
+<span class="cn">Router#</span> <span class="at">exit</span>              <span class="cm"># Chiudi la sessione</span>
+
+<span class="cm"># Comandi di visualizzazione (da Privileged o da #)</span>
+<span class="cn">Router#</span> <span class="at">show running-config</span>  <span class="cm"># Config corrente</span>
+<span class="cn">Router#</span> <span class="at">show ip interface brief</span>  <span class="cm"># Lista interfacce</span>
+<span class="cn">Router#</span> <span class="at">show version</span>        <span class="cm"># Info IOS</span>
+<span class="cn">Router#</span> <span class="at">show ip route</span>       <span class="cm"># Tabella di routing</span></pre>
+            </div>
+
+            <!-- MINI QUIZ 1 -->
+            <div class="mini-quiz" data-quiz-id="q-intro">
+                <h3 style="margin-top:2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">Quale comando ti porta dalla modalit&agrave; User Exec alla Global Config?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-intro-1" value="a"> <code>configure terminal</code></label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-intro-1" value="b"> <code>enable</code> poi <code>configure terminal</code></label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-intro-1" value="c"> <code>sudo configure</code></label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 2: CLI ROUTER ============ -->
+        <section class="section page" id="page-cli-router" data-index="2">
+            <div class="section-number">2</div>
+            <h2>Configurazione Router</h2>
+            <p>Configurare un router significa: assegnargli un nome, attivare le interfacce con IP, impostare le password.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    CONFIGURAZIONE ROUTER CISCO
+                </div>
+                <pre><span class="cn">Router&gt;</span> <span class="at">enable</span>
+<span class="cn">Router#</span> <span class="at">configure terminal</span>
+<span class="cn">Router(config)#</span> <span class="at">hostname R1</span>
+
+<span class="cm">! Prima interfaccia LAN</span>
+<span class="cn">R1(config)#</span> <span class="at">interface GigabitEthernet0/0</span>
+<span class="cn">R1(config-if)#</span> <span class="at">ip address 192.168.1.1 255.255.255.0</span>
+<span class="cn">R1(config-if)#</span> <span class="at">no shutdown</span>              <span class="cm">! ATTIVA l'interfaccia</span>
+<span class="cn">R1(config-if)#</span> <span class="at">description LAN-1</span>
+<span class="cn">R1(config-if)#</span> <span class="at">exit</span>
+
+<span class="cm">! Seconda interfaccia (link WAN verso R2)</span>
+<span class="cn">R1(config)#</span> <span class="at">interface GigabitEthernet0/1</span>
+<span class="cn">R1(config-if)#</span> <span class="at">ip address 10.0.0.1 255.255.255.252</span>
+<span class="cn">R1(config-if)#</span> <span class="at">no shutdown</span>
+<span class="cn">R1(config-if)#</span> <span class="at">description WAN-to-R2</span>
+<span class="cn">R1(config-if)#</span> <span class="at">exit</span>
+
+<span class="cm">! Sicurezza base</span>
+<span class="cn">R1(config)#</span> <span class="at">enable secret cisco123</span>
+<span class="cn">R1(config)#</span> <span class="at">service password-encryption</span>
+<span class="cn">R1(config)#</span> <span class="at">banner motd #Accesso autorizzato solo#</span>
+
+<span class="cm">! Verifica</span>
+<span class="cn">R1(config)#</span> <span class="at">end</span>
+<span class="cn">R1#</span> <span class="at">show ip interface brief</span>
+<span class="cn">R1#</span> <span class="at">show running-config</span></pre>
+            </div>
+
+            <div class="concept-box">
+                <p style="margin:0;">
+                    <strong><code>no shutdown</code> &egrave; fondamentale!</strong> Ogni interfaccia nasce
+                    <strong>administratively down</strong>. Senza questo comando, l'interfaccia non passa traffico.
+                </p>
+            </div>
+
+            <!-- TERMINAL INTERATTIVO: Router CLI -->
+            <div class="demo-zone" style="padding:1rem;">
+                <p class="demo-label">Terminale Router — prova i comandi</p>
+                <div class="terminal-demo" id="terminal-router">
+                    <div class="terminal-header">
+                        <div class="dots"><span></span><span></span><span></span></div>
+                        <span class="terminal-title">Router CLI Simulator</span>
+                        <div class="terminal-spacer"></div>
+                        <button class="terminal-reset-btn" data-terminal="router">Reset</button>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-output" id="terminal-router-output"></div>
+                        <div class="terminal-input-row">
+                            <span class="terminal-prompt" id="terminal-router-prompt">Router&gt;</span>
+                            <input type="text" class="terminal-input" id="terminal-router-input" autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;">
+                    Comandi: <code>enable</code>, <code>configure terminal</code>,
+                    <code>hostname NOME</code>, <code>interface [nome]</code>,
+                    <code>ip address IP MASK</code>, <code>no shutdown</code>,
+                    <code>description TESTO</code>, <code>exit</code>, <code>end</code>,
+                    <code>show ip interface brief</code>, <code>show running-config</code>,
+                    <code>enable secret PASS</code>, <code>service password-encryption</code>,
+                    <code>help</code>
+                </p>
+            </div>
+
+            <!-- MINI QUIZ 2 -->
+            <div class="mini-quiz" data-quiz-id="q-router-cli">
+                <h3 style="margin-top:2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-text">Cosa succede se configuri un IP su un'interfaccia ma dimentichi <code>no shutdown</code>?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-router-cli-1" value="a"> Il router rifiuta l'indirizzo IP</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-router-cli-1" value="b"> L'interfaccia funziona a velocit&agrave; ridotta</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-router-cli-1" value="c"> L'interfaccia rimane "administratively down" e non passa traffico</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 3: CLI SWITCH ============ -->
+        <section class="section page" id="page-cli-switch" data-index="3">
+            <div class="section-number">3</div>
+            <h2>Configurazione Switch — VLAN e Trunk</h2>
+            <p>
+                Lo Switch di default &egrave; "plug and play". Ma per reti complesse servono
+                <strong>VLAN</strong> (separare la rete in segmenti logici) e <strong>Trunk</strong>
+                (trasportare pi&ugrave; VLAN su un solo cavo).
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    CONFIGURAZIONE BASE E VLAN
+                </div>
+                <pre><span class="cn">Switch&gt;</span> <span class="at">enable</span>
+<span class="cn">Switch#</span> <span class="at">configure terminal</span>
+<span class="cn">Switch(config)#</span> <span class="at">hostname SW1</span>
+
+<span class="cm">! IP di gestione (per accedere via SSH/Telnet)</span>
+<span class="cn">SW1(config)#</span> <span class="at">interface vlan 1</span>
+<span class="cn">SW1(config-if)#</span> <span class="at">ip address 192.168.1.2 255.255.255.0</span>
+<span class="cn">SW1(config-if)#</span> <span class="at">no shutdown</span>
+<span class="cn">SW1(config-if)#</span> <span class="at">exit</span>
+<span class="cn">SW1(config)#</span> <span class="at">ip default-gateway 192.168.1.1</span>
+
+<span class="cm">! Crea le VLAN</span>
+<span class="cn">SW1(config)#</span> <span class="at">vlan 10</span>
+<span class="cn">SW1(config-vlan)#</span> <span class="at">name DIPARTIMENTO_A</span>
+<span class="cn">SW1(config-vlan)#</span> <span class="at">exit</span>
+<span class="cn">SW1(config)#</span> <span class="at">vlan 20</span>
+<span class="cn">SW1(config-vlan)#</span> <span class="at">name DIPARTIMENTO_B</span>
+<span class="cn">SW1(config-vlan)#</span> <span class="at">exit</span>
+
+<span class="cm">! Assegna le porte alle VLAN</span>
+<span class="cn">SW1(config)#</span> <span class="at">interface range FastEthernet0/1-10</span>
+<span class="cn">SW1(config-if-range)#</span> <span class="at">switchport mode access</span>
+<span class="cn">SW1(config-if-range)#</span> <span class="at">switchport access vlan 10</span>
+<span class="cn">SW1(config-if-range)#</span> <span class="at">exit</span>
+
+<span class="cn">SW1(config)#</span> <span class="at">interface range FastEthernet0/11-20</span>
+<span class="cn">SW1(config-if-range)#</span> <span class="at">switchport mode access</span>
+<span class="cn">SW1(config-if-range)#</span> <span class="at">switchport access vlan 20</span>
+<span class="cn">SW1(config-if-range)#</span> <span class="at">exit</span>
+
+<span class="cm">! Porta Trunk (verso un altro switch o router-on-a-stick)</span>
+<span class="cn">SW1(config)#</span> <span class="at">interface GigabitEthernet0/1</span>
+<span class="cn">SW1(config-if)#</span> <span class="at">switchport mode trunk</span>
+<span class="cn">SW1(config-if)#</span> <span class="at">exit</span>
+
+<span class="cm">! Verifica</span>
+<span class="cn">SW1#</span> <span class="at">show vlan brief</span></pre>
+            </div>
+
+            <!-- DIAGRAMMA INTERATTIVO VLAN -->
+            <div class="demo-zone">
+                <p class="demo-label">Mappa porte dello Switch — clicca una porta per cambiarne la VLAN</p>
+                <div class="switch-port-grid" id="switch-port-grid">
+                </div>
+                <div class="vlan-legend">
+                    <div class="vlan-legend-item"><span class="vlan-color" style="background:var(--border);"></span> Non assegnata</div>
+                    <div class="vlan-legend-item"><span class="vlan-color" style="background:#049fd9;"></span> VLAN 10 — Dipartimento A</div>
+                    <div class="vlan-legend-item"><span class="vlan-color" style="background:#3fb950;"></span> VLAN 20 — Dipartimento B</div>
+                    <div class="vlan-legend-item"><span class="vlan-color" style="background:#d2a8ff;"></span> VLAN 99 — Mgmt</div>
+                    <div class="vlan-legend-item"><span class="vlan-color" style="background:#ffa657;"></span> Trunk</div>
+                </div>
+                <div id="vlan-detail" style="margin-top:1rem;padding:0.75rem;background:var(--bg-dark);border-radius:8px;border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--text-muted);display:none;"></div>
+            </div>
+
+            <!-- TERMINAL INTERATTIVO Switch -->
+            <div class="demo-zone" style="padding:1rem;">
+                <p class="demo-label">Terminale Switch — prova i comandi</p>
+                <div class="terminal-demo" id="terminal-switch">
+                    <div class="terminal-header">
+                        <div class="dots"><span></span><span></span><span></span></div>
+                        <span class="terminal-title">Switch CLI Simulator</span>
+                        <div class="terminal-spacer"></div>
+                        <button class="terminal-reset-btn" data-terminal="switch">Reset</button>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-output" id="terminal-switch-output"></div>
+                        <div class="terminal-input-row">
+                            <span class="terminal-prompt" id="terminal-switch-prompt">SW1&gt;</span>
+                            <input type="text" class="terminal-input" id="terminal-switch-input" autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;">
+                    Comandi: <code>enable</code>, <code>configure terminal</code>,
+                    <code>hostname NOME</code>, <code>interface [porta]</code>,
+                    <code>switchport access vlan NUM</code>, <code>switchport mode trunk</code>,
+                    <code>switchport mode access</code>, <code>exit</code>, <code>end</code>,
+                    <code>show vlan brief</code>, <code>help</code>
+                </p>
+            </div>
+
+            <!-- MINI QUIZ 3 -->
+            <div class="mini-quiz" data-quiz-id="q-switch-cli">
+                <h3 style="margin-top:2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-text">A cosa serve una porta Trunk?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-switch-cli-1" value="a"> Trasportare il traffico di pi&ugrave; VLAN tra switch</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-switch-cli-1" value="b"> Aumentare la velocit&agrave; a 10 Gbps</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-switch-cli-1" value="c"> Collegare un server a Internet</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 4: RIP V2 ============ -->
+        <section class="section page" id="page-rip-v2" data-index="4">
+            <div class="section-number">4</div>
+            <h2>Routing RIPv2</h2>
+            <p>
+                <strong>RIP</strong> &egrave; il protocollo dinamico pi&ugrave; semplice.
+                Metrica = numero di hop, max <strong>15</strong> (16 = irraggiungibile).
+                v2 supporta VLSM e invia aggiornamenti in multicast (224.0.0.9).
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    R1 — RIPv2
+                </div>
+                <pre><span class="cn">R1(config)#</span> <span class="at">router rip</span>
+<span class="cn">R1(config-router)#</span> <span class="at">version 2</span>
+<span class="cn">R1(config-router)#</span> <span class="at">no auto-summary</span>
+<span class="cn">R1(config-router)#</span> <span class="at">network 192.168.1.0</span>
+<span class="cn">R1(config-router)#</span> <span class="at">network 10.0.0.0</span>
+<span class="cn">R1(config-router)#</span> <span class="at">passive-interface GigabitEthernet0/0</span>
+<span class="cm">! Non inviare RIP sulla LAN (sicurezza)</span></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    R2 — RIPv2
+                </div>
+                <pre><span class="cn">R2(config)#</span> <span class="at">router rip</span>
+<span class="cn">R2(config-router)#</span> <span class="at">version 2</span>
+<span class="cn">R2(config-router)#</span> <span class="at">no auto-summary</span>
+<span class="cn">R2(config-router)#</span> <span class="at">network 10.0.0.0</span>
+<span class="cn">R2(config-router)#</span> <span class="at">network 172.16.0.0</span></pre>
+            </div>
+
+            <!-- TOPOLOGIA INTERATTIVA RIP -->
+            <div class="demo-zone">
+                <p class="demo-label">Topologia RIPv2 — attiva il routing per vedere le rotte apprendere</p>
+                <div class="rip-topology" id="rip-topology">
+                    <div class="rip-router" id="rip-r1">
+                        <div class="rip-router-icon">R</div>
+                        <div class="rip-router-name">R1</div>
+                        <div class="rip-ifaces">
+                            <span class="rip-iface">Gi0/0: 192.168.1.1/24</span>
+                            <span class="rip-iface">Gi0/1: 10.0.0.1/30</span>
+                        </div>
+                        <div class="rip-route-list" id="rip-r1-routes">
+                            <span class="rip-route-item c">C 192.168.1.0/24</span>
+                            <span class="rip-route-item c">C 10.0.0.0/30</span>
+                        </div>
+                    </div>
+                    <div class="rip-link">
+                        <span class="rip-link-label">10.0.0.0/30</span>
+                        <span class="rip-packets" id="rip-packets">
+                            <span class="rip-pkt"></span>
+                            <span class="rip-pkt"></span>
+                            <span class="rip-pkt"></span>
+                        </span>
+                    </div>
+                    <div class="rip-router" id="rip-r2">
+                        <div class="rip-router-icon">R</div>
+                        <div class="rip-router-name">R2</div>
+                        <div class="rip-ifaces">
+                            <span class="rip-iface">Gi0/0: 10.0.0.2/30</span>
+                            <span class="rip-iface">Gi0/1: 172.16.0.1/24</span>
+                        </div>
+                        <div class="rip-route-list" id="rip-r2-routes">
+                            <span class="rip-route-item c">C 172.16.0.0/24</span>
+                            <span class="rip-route-item c">C 10.0.0.0/30</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-row" style="justify-content:center;">
+                    <button class="demo-btn" id="btn-rip-activate">Attiva RIPv2</button>
+                    <button class="demo-btn" id="btn-rip-show-table">show ip route</button>
+                </div>
+                <div id="rip-result" class="rip-result">
+                    Clicca "Attiva RIPv2" per vedere i router scambiarsi le tabelle di routing...
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <p style="margin:0;">
+                    <code>R 172.16.0.0 [120/1]</code> &mdash; <strong>R</strong> = appresa via RIP,
+                    <strong>120</strong> = distanza amministrativa, <strong>1</strong> = metrica (hop).
+                </p>
+            </div>
+
+            <!-- MINI QUIZ 4 -->
+            <div class="mini-quiz" data-quiz-id="q-rip-v2">
+                <h3 style="margin-top:2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">Quale &egrave; la metrica massima di RIP?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-rip-v2-1" value="a"> 100 hop</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-rip-v2-1" value="b"> 15 hop (16 = irraggiungibile)</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-rip-v2-1" value="c"> Non ha limite</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 5: DHCP + IP HELPER ============ -->
+        <section class="section page" id="page-dhcp-helper" data-index="5">
+            <div class="section-number">5</div>
+            <h2>DHCP Server + IP Helper</h2>
+            <p>
+                Il broadcast DHCP (Discover) <strong>non attraversa i router</strong>.
+                Se il server DHCP &egrave; su un'altra rete, serve <code>ip helper-address</code>:
+                il router <strong>converte il broadcast in unicast</strong> verso il server.
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    R1 — Configurazione IP Helper
+                </div>
+                <pre><span class="cn">R1(config)#</span> <span class="at">interface GigabitEthernet0/0</span>
+<span class="cn">R1(config-if)#</span> <span class="at">ip address 192.168.10.1 255.255.255.0</span>
+<span class="cn">R1(config-if)#</span> <span class="at">no shutdown</span>
+<span class="cn">R1(config-if)#</span> <span class="at">ip helper-address 192.168.1.100</span>
+<span class="cm">! Tutti i broadcast DHCP vengono inoltrati a 192.168.1.100</span>
+<span class="cn">R1(config-if)#</span> <span class="at">exit</span></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    DHCP Server — Configurazione Pool
+                </div>
+                <pre><span class="cm">! Su Packet Tracer si usa il servizio DHCP integrato</span>
+<span class="cn">Server&gt;</span> <span class="at">configure terminal</span>
+<span class="cn">Server(config)#</span> <span class="at">ip dhcp pool LAN_CLIENTS</span>
+<span class="cn">Server(dhcp-config)#</span> <span class="at">network 192.168.10.0 255.255.255.0</span>
+<span class="cn">Server(dhcp-config)#</span> <span class="at">default-router 192.168.10.1</span>
+<span class="cn">Server(dhcp-config)#</span> <span class="at">dns-server 8.8.8.8</span>
+<span class="cn">Server(dhcp-config)#</span> <span class="at">domain-name zuccante.local</span></pre>
+            </div>
+
+            <h3 style="margin-top:1.5rem;">Flusso DHCP D.O.R.A.</h3>
+            <p>I 4 passaggi del DHCP:</p>
+            <ol>
+                <li><strong>D</strong>iscover — il PC manda broadcast "Cercasi DHCP"</li>
+                <li><strong>O</strong>ffer — il server risponde con un IP disponibile</li>
+                <li><strong>R</strong>equest — il PC richiede quell'IP</li>
+                <li><strong>A</strong>ck — il server conferma</li>
+            </ol>
+
+            <!-- ANIMAZIONE INTERATTIVA DHCP DORA -->
+            <div class="demo-zone">
+                <p class="demo-label">Animazione DHCP D.O.R.A. — clicca per avviare</p>
+                <div class="dhcp-topology" id="dhcp-topology">
+                    <div class="dhcp-device" id="dhcp-pc1">
+                        <div class="dev-icon">PC</div>
+                        <div class="dev-label">PC1</div>
+                        <div class="dev-ip" id="pc1-ip">—</div>
+                    </div>
+                    <div class="dhcp-link-label" id="dhcp-step-label">
+                        <span class="dhcp-step-text" id="dhcp-step-text">In attesa...</span>
+                    </div>
+                    <div class="dhcp-device" id="dhcp-router">
+                        <div class="dev-icon">R</div>
+                        <div class="dev-label">R1</div>
+                        <div class="dev-ip">ip helper<br>192.168.1.100</div>
+                    </div>
+                    <div class="dhcp-link-label"></div>
+                    <div class="dhcp-device" id="dhcp-server">
+                        <div class="dev-icon" style="border-color:#d2a8ff;color:#d2a8ff;">DHCP</div>
+                        <div class="dev-label">Server</div>
+                        <div class="dev-ip">Pool: .10-.254</div>
+                    </div>
+                </div>
+                <div class="dhcp-animation-bar" id="dhcp-animation-bar">
+                    <div class="dhcp-packet" id="dhcp-pkt-1">
+                        <span class="pkt-label">DISCOVER</span>
+                        <div class="pkt-progress"><div class="pkt-fill" id="pkt-fill-1"></div></div>
+                    </div>
+                    <div class="dhcp-packet" id="dhcp-pkt-2">
+                        <span class="pkt-label">OFFER</span>
+                        <div class="pkt-progress"><div class="pkt-fill" id="pkt-fill-2"></div></div>
+                    </div>
+                    <div class="dhcp-packet" id="dhcp-pkt-3">
+                        <span class="pkt-label">REQUEST</span>
+                        <div class="pkt-progress"><div class="pkt-fill" id="pkt-fill-3"></div></div>
+                    </div>
+                    <div class="dhcp-packet" id="dhcp-pkt-4">
+                        <span class="pkt-label">ACK</span>
+                        <div class="pkt-progress"><div class="pkt-fill" id="pkt-fill-4"></div></div>
+                    </div>
+                </div>
+                <div class="demo-row" style="justify-content:center;">
+                    <button class="demo-btn" id="btn-dhcp-start">Avvia D.O.R.A.</button>
+                    <button class="demo-btn" id="btn-dhcp-reset">Reset</button>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <p style="margin:0;">
+                    <strong><code>ip helper-address</code> &egrave; il segreto.</strong> Senza di esso,
+                    il DHCP Discover (broadcast 255.255.255.255) si ferma al router.
+                    L'helper lo converte in unicast verso il server DHCP sulla rete remota.
+                </p>
+            </div>
+
+            <!-- MINI QUIZ 5 -->
+            <div class="mini-quiz" data-quiz-id="q-dhcp">
+                <h3 style="margin-top:2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">D.O.R.A.: qual &egrave; il terzo messaggio?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-dhcp-1" value="a"> ACK</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-dhcp-1" value="b"> Request</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-dhcp-1" value="c"> Discover</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 6: QUIZ ============ -->
+        <section class="section page" id="page-quiz" data-index="6">
+            <div class="section-number">6</div>
+            <h2>Quiz Finale</h2>
+            <p>Mettiti alla prova! Rispondi alle domande e scopri quanto hai imparato.</p>
+
+            <div class="quiz-section" id="quiz-box">
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">1</span>
+                    <span class="q-text">Di che colore &egrave; il LED di un'interfaccia "administratively down"?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q1" value="a"> Verde</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b"> Rosso (down/down)</label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c"> Giallo (link)</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-number">2</span>
+                    <span class="q-text">Come assegni la porta FastEthernet0/5 alla VLAN 10?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> <code>interface fa0/5</code> > <code>switchport access vlan 10</code></label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> <code>vlan 10 port 5</code></label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> <code>port fa0/5 set vlan 10</code></label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-number">3</span>
+                    <span class="q-text">Cos'&egrave; <code>no auto-summary</code> in RIP?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> Disabilita il routing</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> Attiva il protocollo OSPF</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> Invia le sottoreti esatte invece di riassumerle al confine di classe</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">4</span>
+                    <span class="q-text">Quale comando abilita il forwarding dei broadcast DHCP?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> <code>ip dhcp forward</code></label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> <code>ip helper-address &lt;IP&gt;</code></label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> <code>ip dhcp relay</code></label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-number">5</span>
+                    <span class="q-text">La distanza amministrativa di RIP &egrave;:</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q5" value="a"> 120</label>
+                        <label class="quiz-option"><input type="radio" name="q5" value="b"> 90</label>
+                        <label class="quiz-option"><input type="radio" name="q5" value="c"> 1</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-number">6</span>
+                    <span class="q-text">Il messaggio DHCP Offer contiene:</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q6" value="a"> La risposta al ping del server</label>
+                        <label class="quiz-option"><input type="radio" name="q6" value="b"> Le credenziali del client</label>
+                        <label class="quiz-option"><input type="radio" name="q6" value="c"> Un indirizzo IP proposto, la subnet mask e il default gateway</label>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button id="btn-submit-quiz">Correggi il quiz</button>
+                </div>
+
+                <div class="quiz-score" id="quiz-score">
+                    <div class="score-value" id="score-val"></div>
+                    <div class="score-label" id="score-label"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGINATION -->
+        <div class="pagination" id="pagination">
+            <button class="page-btn" id="btn-prev">
+                <span class="arrow">&#9664;</span> Precedente
+            </button>
+            <div class="page-center">
+                <label>Argomento:</label>
+                <div class="page-dots" id="page-dots"></div>
+                <input type="number" id="page-input" min="1" max="6" value="1" aria-label="Numero pagina">
+            </div>
+            <button class="page-btn" id="btn-next">
+                Successivo <span class="arrow">&#9654;</span>
+            </button>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>Tutorial Cisco Packet Tracer per l'<strong>ITIS Zuccante</strong> di Mestre &mdash; 2026</p>
+            <p style="margin-top: .5rem;">
+                Risorse: <a href="https://skillsforall.com/it/courses/packet-tracer" target="_blank">Skills For All — Corso PT</a>
+                &middot;
+                <a href="https://www.netacad.com/" target="_blank">Cisco Networking Academy</a>
+            </p>
+        </footer>
+
+    </div><!-- .container -->
+
+    <script src="pt-script.js"></script>
+</body>
+</html>

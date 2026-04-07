@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript &mdash; Guida Rapida</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="." class="nav-logo" id="nav-home">JS { }</a>
+            <a href="index.php" class="nav-logo" style="margin-left:-0.5rem;opacity:.4;font-size:.8rem;">&larr; Tutti</a>
+            <div class="nav-links">
+                <a class="nav-link active" data-page="import">Import</a>
+                <a class="nav-link" data-page="eventi">Eventi</a>
+                <a class="nav-link" data-page="dom">DOM</a>
+                <a class="nav-link" data-page="promise">Promise</a>
+                <a class="nav-link" data-page="fetch">Fetch</a>
+                <a class="nav-link" data-page="quiz">Quiz</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- HERO -->
+        <header class="hero" id="hero">
+            <div class="hero-badge">ITIS ZUCCANTE &mdash; 4IB</div>
+            <h1>Benvenuto in <span class="highlight">JavaScript</span></h1>
+            <p class="hero-sub">
+                Hai già visto Java e un po' di Python.<br>
+                JavaScript è diverso, ma ti sentirai subito a casa.<br>
+                Vediamo le basi con <code>5 argomenti</code> + <code>quiz finale</code>.
+            </p>
+        </header>
+
+        <!-- ============ PAGE 1: IMPORT ============ -->
+        <section class="section page" id="page-import" data-index="1">
+            <div class="section-number">1</div>
+            <h2>Importare script JS in HTML</h2>
+            <p>
+                Il modo <strong>sbagliato</strong> più comune è mettere lo
+                <code>&lt;script&gt;</code> nell'<code>&lt;head&gt;</code> senza accorgimenti.
+                Il browser esegue lo script <em>prima</em> che il contenuto della pagina sia caricato
+                &rarr; se provi a leggere un elemento HTML, ottieni <code>null</code>.
+            </p>
+
+            <div class="java-tip">
+                <span class="tip-label">Java</span>
+                <span class="tip-text">
+                    In Java il <code>public static void main(String[] args)</code> è il punto di ingresso
+                    del programma. In JS non c'è un main formale, l'equivalente è
+                    <code>DOMContentLoaded</code>: è il momento in cui il DOM
+                    è pronto e puoi cominciare a lavorarci.
+                </span>
+            </div>
+
+            <p>I 3 modi più comuni per caricare uno script:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    MODO 1 &mdash; DOMContentLoaded (script inline)
+                </div>
+                <pre><span class="tg">&lt;script&gt;</span>
+  <span class="cn">document</span>.<span class="fn">addEventListener</span>(<span class="str">'DOMContentLoaded'</span>, () <span class="op">=&gt;</span> {
+    <span class="cn">console</span>.<span class="fn">log</span>(<span class="str">'Il DOM è pronto!'</span>);
+  });
+<span class="tg">&lt;/script&gt;</span></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    MODO 2 &mdash; attributo defer (file esterni)
+                </div>
+                <pre><span class="tg">&lt;script</span> <span class="at">defer</span> <span class="at">src</span>=<span class="str">"app.js"</span><span class="tg">&gt;&lt;/script&gt;</span></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    MODO 3 &mdash; &lt;script&gt; in fondo al &lt;body&gt;
+                </div>
+                <pre><span class="tg">&lt;body&gt;</span>
+  ... contenuto ...
+  <span class="tg">&lt;script</span> <span class="at">src</span>=<span class="str">"app.js"</span><span class="tg">&gt;&lt;/script&gt;</span>
+<span class="tg">&lt;/body&gt;</span></pre>
+            </div>
+
+            <p><strong>Riassunto:</strong></p>
+            <ul>
+                <li><code>defer</code> &rarr; scarica in parallelo, esegue dopo il parse dell'HTML. <strong>Il più
+                        usato.</strong></li>
+                <li><code>async</code> &rarr; scarica in parallelo, esegue appena pronto (ordine non garantito). Utile
+                    per analytics.</li>
+                <li><code>DOMContentLoaded</code> &rarr; equivalente logico per script inline.</li>
+            </ul>
+
+            <!-- MINI QUIZ 1 -->
+            <div class="mini-quiz" data-quiz-id="q-import">
+                <h3 style="margin-top: 2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">Qual è l'attributo che scarica il file in parallelo e lo esegue dopo il parse
+                        dell'HTML?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-import-1" value="a">
+                            <code>async</code></label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-import-1" value="b">
+                            <code>defer</code></label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-import-1" value="c">
+                            <code>sync</code></label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display: none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 2: EVENTI ============ -->
+        <section class="section page" id="page-eventi" data-index="2">
+            <div class="section-number">2</div>
+            <h2>Eventi ed EventListener</h2>
+
+            <h3>Cosa sono gli eventi?</h3>
+            <p>
+                JavaScript è un linguaggio <strong>event-driven</strong>: il tuo programma rimane in
+                ascolto e reagisce alle azioni dell'utente. Ogni volta che l'utente clicca, preme un
+                tasto, sposta il mouse o invia un form, il browser genera un <strong>evento</strong>.
+            </p>
+            <p>
+                Per "catturare" un evento usi <code>addEventListener</code>:
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    addEventListener: la struttura
+                </div>
+                <pre><span class="kw">const</span> <span class="vr">elemento</span> = <span class="cn">document</span>.<span class="fn">querySelector</span>(<span class="str">'#mioBottone'</span>);
+
+<span class="vr">elemento</span>.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, (<span class="at">evento</span>) <span class="op">=&gt;</span> {
+  <span class="cn">console</span>.<span class="fn">log</span>(<span class="vr">evento</span>.<span class="pr">target</span>);
+});</pre>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Eventi comuni</h3>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    I più usati
+                </div>
+                <pre><span class="cm">// click — quando l'utente clicca</span>
+<span class="vr">btn</span>.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () <span class="op">=&gt;</span> {
+  <span class="cn">console</span>.<span class="fn">log</span>(<span class="str">'Hai cliccato!'</span>);
+});
+
+<span class="cm">// submit — quando viene inviato un form</span>
+<span class="vr">form</span>.<span class="fn">addEventListener</span>(<span class="str">'submit'</span>, (<span class="at">e</span>) <span class="op">=&gt;</span> {
+  <span class="vr">e</span>.<span class="fn">preventDefault</span>(); <span class="cm">// evita il ricaricamento</span>
+});
+
+<span class="cm">// keydown — quando viene premuto un tasto</span>
+<span class="vr">input</span>.<span class="fn">addEventListener</span>(<span class="str">'keydown'</span>, (<span class="at">e</span>) <span class="op">=&gt;</span> {
+  <span class="kw">if</span> (<span class="vr">e</span>.<span class="pr">key</span> === <span class="str">'Enter'</span>) {
+    <span class="cn">console</span>.<span class="fn">log</span>(<span class="str">'L\'utente ha premuto Enter'</span>);
+  }
+});</pre>
+            </div>
+
+            <div class="java-tip">
+                <span class="tip-label">Java</span>
+                <span class="tip-text">
+                    Se hai già visto <code>System.in.read()</code> o <code>Scanner</code>:
+                    è un approccio <em>sincrono</em>, il programma si blocca in attesa dell'input.
+                    Gli eventi JS sono <em>asincroni</em>: il codice continua a girare e la callback
+                    viene chiamata solo quando succede qualcosa.
+                </span>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Il Bubbling</h3>
+            <p>
+                Quando clicchi un elemento <strong>interno</strong>, l'evento non si ferma lì:
+                <strong>risale la catena</strong> degli elementi genitori, come un'onda che si espande.
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    Il bubbling in pratica
+                </div>
+                <pre><span class="cm">// Ordine: inner → parent → outer → ... → document</span>
+<span class="vr">btn</span>.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, (<span class="at">e</span>) <span class="op">=&gt;</span> {
+  <span class="vr">e</span>.<span class="fn">stopPropagation</span>(); <span class="cm">// ferma la risalita</span>
+});</pre>
+            </div>
+
+            <!-- Demo: bubbling interattivo -->
+            <div class="demo-zone">
+                <p class="demo-label">Prova il bubbling &mdash; clicca una scatola</p>
+
+                <!-- Diagramma di propagazione: capturing (sopra) e bubbling (sotto) -->
+                <div class="bubble-visual" id="bubble-diagram">
+                    <!-- Capturing phase -->
+                    <div class="bubble-node" id="bubble-document" data-node="document">
+                        <div class="bubble-name">document</div>
+                        <div class="bubble-indicator">○</div>
+                    </div>
+                    <span class="bubble-arr"><span class="arr-d">&#9654;</span></span>
+                    <div class="bubble-node" id="bubble-body" data-node="body">
+                        <div class="bubble-name">body</div>
+                        <div class="bubble-indicator">○</div>
+                    </div>
+                    <span class="bubble-arr"><span class="arr-d">&#9654;</span></span>
+                    <div class="bubble-node" id="bubble-outer" data-node="outer">
+                        <div class="bubble-name">#outer</div>
+                        <div class="bubble-indicator">○</div>
+                    </div>
+                    <span class="bubble-arr"><span class="arr-d">&#9654;</span></span>
+                    <div class="bubble-node" id="bubble-middle" data-node="middle">
+                        <div class="bubble-name">#middle</div>
+                        <div class="bubble-indicator">○</div>
+                    </div>
+                    <span class="bubble-arr"><span class="arr-d">&#9654;</span></span>
+                    <div class="bubble-node" id="bubble-inner" data-node="inner">
+                        <div class="bubble-name">#inner</div>
+                        <div class="bubble-indicator">○</div>
+                    </div>
+                </div>
+                <div class="bubble-phase-labels">
+                    <span class="phase-lbl phase-capture">capturing (scendono)</span>
+                    <span class="phase-lbl phase-bubble">risalgono (bubbling)</span>
+                </div>
+
+                <!-- StopPropagation toggle su ogni nodo -->
+                <div class="stop-prop-row">
+                    <span class="stop-prop-label"><code>e.stopPropagation()</code> su:</span>
+                    <div class="stop-prop-toggles" id="stop-prop-toggles">
+                        <div class="bubble-stop-btn" data-target="document" tabindex="0">document</div>
+                        <div class="bubble-stop-btn" data-target="body" tabindex="0">body</div>
+                        <div class="bubble-stop-btn" data-target="outer" tabindex="0">#outer</div>
+                        <div class="bubble-stop-btn" data-target="middle" tabindex="0">#middle</div>
+                        <div class="bubble-stop-btn" data-target="inner" tabindex="0">#inner</div>
+                    </div>
+                </div>
+
+                <!-- Scatole cliccabili -->
+                <div id="box-outer" class="bubble-box">
+                    <span>div#outer</span>
+                    <div id="box-middle" class="bubble-box">
+                        <span>div#middle</span>
+                        <div id="box-inner" class="bubble-box">
+                            <span>div#inner</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="log-output"></div>
+                <button class="demo-btn" id="btn-clear-log" style="margin-top: 0.75rem;">Pulisci log</button>
+            </div>
+
+            <!-- MINI QUIZ 2 -->
+            <div class="mini-quiz" data-quiz-id="q-eventi">
+                <h3 style="margin-top: 2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-text">Se chiami <code>stopPropagation()</code> su un click a <code>div#inner</code>,
+                        chi NON riceve l'evento?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-eventi-1" value="a">
+                            I genitori (es. <code>#outer</code>)</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-eventi-1" value="b">
+                            <code>#inner</code> stesso</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-eventi-1" value="c">
+                            Il <code>document</code></label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display: none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 3: DOM ============ -->
+        <section class="section page" id="page-dom" data-index="3">
+            <div class="section-number">3</div>
+            <h2>Manipolare il DOM</h2>
+            <p>
+                Il <strong>DOM</strong> (Document Object Model) è la rappresentazione ad albero
+                della tua pagina HTML. Ogni tag HTML diventa un "nodo" che JavaScript può leggere,
+                modificare, creare o cancellare.
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    Selezionare elementi
+                </div>
+                <pre><span class="kw">const</span> <span class="vr">titolo</span> = <span class="cn">document</span>.<span class="fn">querySelector</span>(<span class="str">'h1'</span>);
+<span class="kw">const</span> <span class="vr">item</span>   = <span class="cn">document</span>.<span class="fn">querySelector</span>(<span class="str">'.classe'</span>);
+<span class="kw">const</span> <span class="vr">tutti</span>  = <span class="cn">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">'.card'</span>); <span class="cm">// NodeList</span>
+<span class="kw">const</span> <span class="vr">main</span>   = <span class="cn">document</span>.<span class="fn">getElementById</span>(<span class="str">'main'</span>);</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    Modificare contenuto e stili
+                </div>
+                <pre><span class="vr">titolo</span>.<span class="pr">textContent</span> = <span class="str">'Nuovo titolo'</span>;
+<span class="vr">contenuto</span>.<span class="pr">innerHTML</span> = <span class="str">'&lt;strong&gt;Grassetto&lt;/strong&gt; e testo'</span>;
+<span class="vr">titolo</span>.<span class="pr">style</span>.<span class="pr">color</span> = <span class="str">'#f7df1e'</span>;
+<span class="vr">titolo</span>.<span class="pr">style</span>.<span class="pr">fontSize</span> = <span class="str">'2rem'</span>;
+
+<span class="cm">// Classi CSS: il modo migliore</span>
+<span class="vr">titolo</span>.<span class="pr">classList</span>.<span class="fn">add</span>(<span class="str">'attivo'</span>);
+<span class="vr">titolo</span>.<span class="pr">classList</span>.<span class="fn">remove</span>(<span class="str">'nascosto'</span>);
+<span class="vr">titolo</span>.<span class="pr">classList</span>.<span class="fn">toggle</span>(<span class="str">'attivo'</span>);  <span class="cm">// aggiunge o rimuove</span></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    Creare e rimuovere elementi
+                </div>
+                <pre><span class="kw">const</span> <span class="vr">nuovo</span> = <span class="cn">document</span>.<span class="fn">createElement</span>(<span class="str">'div'</span>);
+<span class="vr">nuovo</span>.<span class="pr">className</span> = <span class="str">'card'</span>;
+<span class="vr">nuovo</span>.<span class="pr">textContent</span> = <span class="str">'Sono nuovo!'</span>;
+<span class="cn">document</span>.<span class="fn">querySelector</span>(<span class="str">'#lista'</span>).<span class="fn">appendChild</span>(<span class="vr">nuovo</span>);
+<span class="vr">nuovo</span>.<span class="fn">remove</span>();</pre>
+            </div>
+
+            <div class="demo-zone">
+                <p class="demo-label">Esperimento DOM</p>
+                <div class="demo-row">
+                    <button class="demo-btn" id="btn-add">+ Aggiungi elemento</button>
+                    <button class="demo-btn" id="btn-remove">- Rimuovi ultimo</button>
+                    <button class="demo-btn" id="btn-clear">Svuota tutto</button>
+                </div>
+                <div id="dom-output"><em>...niente ancora, clicca un bottone...</em></div>
+            </div>
+
+            <!-- MINI QUIZ 3 -->
+            <div class="mini-quiz" data-quiz-id="q-dom">
+                <h3 style="margin-top: 2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-text">Come aggiungi la classe CSS <code>highlight</code> a un elemento?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-dom-1" value="a">
+                            <code>element.class = 'highlight'</code></label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-dom-1" value="b">
+                            <code>element.add('highlight')</code></label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-dom-1" value="c">
+                            <code>element.classList.add('highlight')</code></label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display: none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 4: PROMISE ============ -->
+        <section class="section page" id="page-promise" data-index="4">
+            <div class="section-number">4</div>
+            <h2>Promise e Async/Await</h2>
+            <p>
+                Quando il tuo programma deve aspettare qualcosa (una risposta dal server, un timer),
+                non può bloccarsi. JavaScript usa le <strong>Promise</strong> per gestire queste situazioni.
+            </p>
+
+            <div class="java-tip">
+                <span class="tip-label">Java</span>
+                <span class="tip-text">
+                    In Java una chiamata HTTP blocca il thread (o usi <code>CompletableFuture</code>).
+                    In JS tutto è <strong>single-thread</strong>, quindi se una chiamata di rete
+                    bloccasse il browser si <em>congelerebbe</em>.
+                </span>
+            </div>
+
+            <h3>I 3 stati di una Promise</h3>
+            <p>Una promise è come un "contratto" &mdash; parte come <strong>pending</strong> (in attesa) e poi diventa
+                <em>o</em> <strong>fulfilled</strong> (mantenuta) <em>o</em> <strong>rejected</strong> (rifiutata). Non
+                può essere entrambe.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    Creare una Promise
+                </div>
+                <pre><span class="kw">const</span> <span class="vr">miaPromise</span> = <span class="kw">new</span> <span class="bi">Promise</span>((<span class="at">resolve</span>, <span class="at">reject</span>) <span class="op">=&gt;</span> {
+  <span class="fn">setTimeout</span>(() <span class="op">=&gt;</span> {
+    <span class="kw">const</span> <span class="vr">ok</span> = <span class="bi">Math</span>.<span class="fn">random</span>() > <span class="num">0.5</span>;
+    <span class="kw">if</span> (<span class="vr">ok</span>) {
+      <span class="fn">resolve</span>(<span class="str">'Tutto OK!'</span>);   <span class="cm">// → fulfilled</span>
+    } <span class="kw">else</span> {
+      <span class="fn">reject</span>(<span class="str">'Errore'</span>);      <span class="cm">// → rejected</span>
+    }
+  }, <span class="num">1000</span>);
+});
+
+<span class="cm">// Modo 1: .then() e .catch()</span>
+<span class="vr">miaPromise</span>
+  .<span class="fn">then</span>(<span class="at">r</span> <span class="op">=&gt;</span> <span class="cn">console</span>.<span class="fn">log</span>(<span class="vr">r</span>))
+  .<span class="fn">catch</span>(<span class="at">e</span> <span class="op">=&gt;</span> <span class="cn">console</span>.<span class="fn">error</span>(<span class="vr">e</span>));
+
+<span class="cm">// Modo 2: async/await (più leggibile)</span>
+<span class="kw">async function</span> <span class="fn">esempio</span>() {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="vr">r</span> = <span class="kw">await</span> <span class="vr">miaPromise</span>;
+    <span class="cn">console</span>.<span class="fn">log</span>(<span class="vr">r</span>);
+  } <span class="kw">catch</span> (<span class="at">e</span>) {
+    <span class="cn">console</span>.<span class="fn">error</span>(<span class="vr">e</span>);
+  }
+}</pre>
+            </div>
+
+            <p><code>async</code> e <code>await</code> sono solo una <em>sintassi più leggibile</em>
+                per le stesse Promise. I due modi sono equivalenti.</p>
+
+            <div class="demo-zone">
+                <p class="demo-label">Laboratorio Promise &mdash; vedi gli stati in azione</p>
+
+                <div class="promise-visual">
+                    <div class="promise-state-box" id="state-pending">
+                        <div class="state-name">pending</div>
+                        <div class="state-icon">?</div>
+                    </div>
+                    <span class="promise-arrow">&rarr;</span>
+                    <div class="promise-state-box" id="state-fulfilled">
+                        <div class="state-name">fulfilled</div>
+                        <div class="state-icon">✓</div>
+                    </div>
+                    <span class="promise-arrow"></span>
+                    <div class="promise-state-box" id="state-rejected">
+                        <div class="state-name">rejected</div>
+                        <div class="state-icon">✗</div>
+                    </div>
+                </div>
+
+                <div class="demo-row" style="justify-content: center;">
+                    <button class="demo-btn" id="btn-promise-ok">Promise → OK</button>
+                    <button class="demo-btn" id="btn-promise-fail">Promise → Errore</button>
+                    <button class="demo-btn" id="btn-promise-chain">Catena di Promise</button>
+                </div>
+
+                <div id="promise-result" class="promise-result">
+                    Clicca un bottone per vedere cosa succede...
+                </div>
+            </div>
+
+            <!-- MINI QUIZ 4 -->
+            <div class="mini-quiz" data-quiz-id="q-promise">
+                <h3 style="margin-top: 2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">Dato <code>const p = new Promise((resolve) => resolve(42))</code>, come ottieni
+                        il valore <code>42</code>?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-promise-1" value="a">
+                            <code>p.value</code></label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-promise-1" value="b">
+                            <code>const r = await p</code> oppure <code>p.then(r => ...)</code></label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-promise-1" value="c">
+                            <code>p.get()</code></label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display: none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 5: FETCH ============ -->
+        <section class="section page" id="page-fetch" data-index="5">
+            <div class="section-number">5</div>
+            <h2>Fetch API</h2>
+            <p>
+                <code>fetch()</code> è la funzione built-in di JavaScript per fare richieste HTTP.
+                Restituisce una <strong>Promise</strong>, quindi si usa con <code>async/await</code>.
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="dots"><span></span><span></span><span></span></div>
+                    fetch() &mdash; richiesta GET
+                </div>
+                <pre><span class="kw">async function</span> <span class="fn">leggiDati</span>() {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="vr">risposta</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://jsonplaceholder.typicode.com/users?_limit=3'</span>);
+
+    <span class="kw">if</span> (!<span class="vr">risposta</span>.<span class="pr">ok</span>) {
+      <span class="kw">throw new</span> <span class="bi">Error</span>(<span class="str">`HTTP: </span><span class="op">${</span><span class="vr">risposta</span>.<span class="pr">status</span><span class="op">}</span><span class="str">`</span>);
+    }
+
+    <span class="kw">const</span> <span class="vr">dati</span> = <span class="kw">await</span> <span class="vr">risposta</span>.<span class="fn">json</span>();
+    <span class="vr">dati</span>.<span class="fn">forEach</span>(<span class="at">u</span> <span class="op">=&gt;</span> <span class="cn">console</span>.<span class="fn">log</span>(<span class="vr">u</span>.<span class="pr">name</span>));
+  } <span class="kw">catch</span> (<span class="at">err</span>) {
+    <span class="cn">console</span>.<span class="fn">error</span>(<span class="str">'Errore:'</span>, <span class="vr">err</span>);
+  }
+}</pre>
+            </div>
+
+            <p><strong>JSON:</strong></p>
+            <ul>
+                <li><code>JSON.stringify(obj)</code> &rarr; da oggetto a stringa JSON</li>
+                <li><code>JSON.parse(string)</code> &rarr; da stringa JSON a oggetto</li>
+            </ul>
+
+            <div class="demo-zone">
+                <p class="demo-label">Prova fetch() &mdash; chiama un'API reale</p>
+                <div class="demo-row">
+                    <button class="demo-btn" id="btn-fetch">Chiama API (GET)</button>
+                </div>
+                <div id="fetch-output">Clicca il bottone per fare una richiesta...</div>
+            </div>
+
+            <!-- MINI QUIZ 5 -->
+            <div class="mini-quiz" data-quiz-id="q-fetch">
+                <h3 style="margin-top: 2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">A cosa serve <code>risposta.json()</code> dopo un <code>fetch()</code>?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-fetch-1" value="a">
+                            Converte l'intero HTML in JSON</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-fetch-1" value="b">
+                            Parsifica il body della risposta HTTP come un oggetto JavaScript</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-fetch-1" value="c">
+                            Controlla se la risposta è valida</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display: none;"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 6: QUIZ ============ -->
+        <section class="section page" id="page-quiz" data-index="6">
+            <div class="section-number">6</div>
+            <h2>Quiz Finale</h2>
+            <p>Mettiti alla prova! Rispondi alle domande e scopri quanto hai imparato.</p>
+
+            <div class="quiz-section" id="quiz-box">
+                <!-- Q1 -->
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">1</span>
+                    <span class="q-text">Qual è il modo migliore per caricare un file JavaScript esterno e garantirsi
+                        che il DOM sia pronto?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q1" value="a">
+                            <code>&lt;script src="app.js"&gt;</code> nell'<code>&lt;head&gt;</code></label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="b">
+                            <code>&lt;script defer src="app.js"&gt;</code></label>
+                        <label class="quiz-option"><input type="radio" name="q1" value="c">
+                            <code>&lt;script async src="app.js"&gt;</code></label>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-number">2</span>
+                    <span class="q-text">Cosa rappresenta l'oggetto <code>event.target</code> in un event
+                        listener?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q2" value="a"> L'elemento su cui hai
+                            registrato l'evento</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="b"> Il tag
+                            <code>&lt;body&gt;</code> della pagina</label>
+                        <label class="quiz-option"><input type="radio" name="q2" value="c"> L'elemento che ha originato
+                            l'evento</label>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-number">3</span>
+                    <span class="q-text">Se clicchi su <code>div#inner</code> dentro <code>div#outer</code> e non usi
+                        <code>stopPropagation()</code>, in quale ordine scattano i listener?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q3" value="a"> inner &rarr; outer</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="b"> outer &rarr; inner</label>
+                        <label class="quiz-option"><input type="radio" name="q3" value="c"> Scattano solo su
+                            inner</label>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">4</span>
+                    <span class="q-text">Qual è la differenza principale tra <code>textContent</code> e
+                        <code>innerHTML</code>?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q4" value="a"> Non c'è differenza, sono
+                            sinonimi</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="b"> <code>textContent</code>
+                            inserisce solo testo, <code>innerHTML</code> parsifica l'HTML</label>
+                        <label class="quiz-option"><input type="radio" name="q4" value="c"> <code>innerHTML</code> è più
+                            veloce di <code>textContent</code></label>
+                    </div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-number">5</span>
+                    <span class="q-text">Cosa succede quando chiami <code>document.createElement('div')</code>?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q5" value="a"> Viene creato un elemento
+                            <code>&lt;div&gt;</code> in memoria, ma non appare nella pagina finché non lo
+                            appendi</label>
+                        <label class="quiz-option"><input type="radio" name="q5" value="b"> Viene aggiunto
+                            automaticamente in fondo al <code>&lt;body&gt;</code></label>
+                        <label class="quiz-option"><input type="radio" name="q5" value="c"> Viene rimosso un
+                            <code>&lt;div&gt;</code> dalla pagina</label>
+                    </div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-number">6</span>
+                    <span class="q-text">Una Promise può trovarsi nello stato <strong>fulfilled</strong> E
+                        <strong>rejected</strong> allo stesso tempo?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q6" value="a"> Sì, se l'operazione è
+                            complessa</label>
+                        <label class="quiz-option"><input type="radio" name="q6" value="b"> No, solo rejected</label>
+                        <label class="quiz-option"><input type="radio" name="q6" value="c"> No, o fulfilled o rejected,
+                            mai entrambi</label>
+                    </div>
+                </div>
+
+                <!-- Q7 -->
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">7</span>
+                    <span class="q-text">Cosa restituisce <code>fetch()</code>?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q7" value="a"> Direttamente i dati
+                            JSON</label>
+                        <label class="quiz-option"><input type="radio" name="q7" value="b"> Una Promise che risolve con
+                            un oggetto <code>Response</code></label>
+                        <label class="quiz-option"><input type="radio" name="q7" value="c"> Un array di stringhe</label>
+                    </div>
+                </div>
+
+                <!-- Q8 -->
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-number">8</span>
+                    <span class="q-text">A cosa serve <code>JSON.parse()</code>?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="q8" value="a"> Trasformare una stringa JSON
+                            in un oggetto JavaScript</label>
+                        <label class="quiz-option"><input type="radio" name="q8" value="b"> Trasformare un oggetto
+                            JavaScript in una stringa JSON</label>
+                        <label class="quiz-option"><input type="radio" name="q8" value="c"> Validare l'HTML della
+                            pagina</label>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button id="btn-submit-quiz">Correggi il quiz</button>
+                </div>
+
+                <div class="quiz-score" id="quiz-score">
+                    <div class="score-value" id="score-val"></div>
+                    <div class="score-label" id="score-label"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGINATION -->
+        <div class="pagination" id="pagination">
+            <button class="page-btn" id="btn-prev">
+                <span class="arrow">&#9664;</span> Precedente
+            </button>
+            <div class="page-center">
+                <label>Argomento:</label>
+                <div class="page-dots" id="page-dots"></div>
+                <input type="number" id="page-input" min="1" max="6" value="1" aria-label="Numero pagina">
+            </div>
+            <button class="page-btn" id="btn-next">
+                Successivo <span class="arrow">&#9654;</span>
+            </button>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>Tutorial JS per l'<strong>ITIS Zuccante</strong> di Mestre &mdash; 2026</p>
+            <p style="margin-top: .5rem;">
+                Risorse: <a href="https://developer.mozilla.org/it/docs/Web/JavaScript" target="_blank">MDN Web Docs</a>
+                &middot;
+                <a href="https://javascript.info/" target="_blank">JavaScript.info</a>
+            </p>
+        </footer>
+
+    </div><!-- .container -->
+
+    <script src="tutorial.js"></script>
+</body>
+
+</html>
