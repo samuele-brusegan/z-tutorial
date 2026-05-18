@@ -5,7 +5,7 @@
 $catNames = [
     'js'  => 'JavaScript', 'html' => 'HTML',   'css'  => 'CSS',
     'db'  => 'Database',   'git'  => 'Git',    'net'  => 'Networking',
-    'networking' => 'Networking', 'java' => 'Java',
+    'networking' => 'Networking', 'java' => 'Java', 'algo' => 'Algoritmi',
 ];
 $levelNames = [
     'easy'   => 'facile',  'medium' => 'medio',  'hard' => 'difficile',

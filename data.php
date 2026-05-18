@@ -83,4 +83,14 @@ $tutorials = [
         'pages'   => '7 pagine',
         'file'    => 'javafx-maven.html',
     ],
+    [
+	'id'	   => 8,
+        'title'    => 'Grafi e Algoritmi — Visualizzazione interattiva',
+        'category' => 'algo',
+        'level'    => 'medium',
+        'desc'     => 'BFS, DFS, Dijkstra, Bellman-Ford, Prim, Kruskal: animazioni, tabelle di traccia e spiegazioni passo-passo.',
+        'tags'     => ['BFS', 'DFS', 'Dijkstra', 'MST', 'cammini minimi'],
+        'pages'    => 'interattivo',
+        'file'     => 'grafi.html',
+    ],
 ];
