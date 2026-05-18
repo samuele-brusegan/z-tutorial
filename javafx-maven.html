@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaFX con Maven &mdash; IntelliJ e VSCode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --java-blue: #58a6ff;
+            --java-green: #3fb950;
+            --java-orange: #ffa657;
+        }
+        .nav-logo, .nav-links a:hover, .nav-links a.active, .hero h1 .highlight,
+        .section li code, .section p code { color: var(--java-blue); }
+        .nav-links a:hover, .nav-links a.active { background: #58a6ff22; }
+        .hero-badge, .section-number { background: var(--java-blue); color: #06111f; }
+        .hero h1 .highlight::after, .section::before { background: var(--java-blue); }
+        .java-tip { background: #0f1a25; border-left-color: var(--java-blue); }
+        .java-tip .tip-label { background: var(--java-blue); color: #06111f; }
+        .gni-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin: 1.25rem 0;
+        }
+        .gni-card {
+            border: 1px solid var(--border); border-radius: 8px; padding: .9rem;
+            background: #0d1117; min-height: 120px;
+        }
+        .gni-card strong {
+            display: block; font-family: 'Space Mono', monospace; font-size: .82rem;
+            color: var(--text); margin-bottom: .35rem;
+        }
+        .gni-card span { color: var(--text-muted); font-size: .88rem; }
+        .file-tree {
+            text-align: left; border: 1px solid var(--border); border-radius: 8px;
+            background: #0d1117; padding: .9rem; font-family: 'JetBrains Mono', monospace;
+            font-size: .82rem; margin-bottom: .85rem;
+        }
+        .file-node {
+            display: block; padding: .25rem .45rem; border-radius: 6px; color: var(--text-muted);
+            cursor: pointer;
+        }
+        .file-node:hover, .file-node.selected { background: #58a6ff1f; color: var(--java-blue); }
+        .ide-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1rem 0; }
+        .ide-tab, .copyless-select {
+            font-family: 'JetBrains Mono', monospace; font-size: .78rem;
+            border: 1px solid var(--border); background: #0d1117; color: var(--text-muted);
+            border-radius: 6px; padding: .45rem .7rem; cursor: pointer;
+        }
+        .ide-tab.active { border-color: var(--java-blue); color: var(--java-blue); background: #58a6ff1c; }
+        .ide-panel { display: none; }
+        .ide-panel.active { display: block; }
+        .pom-checker textarea {
+            width: 100%; min-height: 210px; resize: vertical; border-radius: 8px;
+            border: 1px solid var(--border); background: #0d1117; color: var(--text);
+            padding: .9rem; font-family: 'JetBrains Mono', monospace; font-size: .8rem;
+        }
+        .check-list { list-style: none; padding-left: 0; margin-top: .8rem; }
+        .check-list li {
+            display: flex; gap: .6rem; align-items: center; border: 1px solid var(--border);
+            border-radius: 6px; padding: .45rem .6rem; margin-bottom: .4rem;
+        }
+        .check-list li span {
+            font-family: 'JetBrains Mono', monospace; font-size: .68rem; min-width: 28px;
+            color: var(--text-muted);
+        }
+        .check-list li.ok { border-color: #3fb95055; background: #3fb95012; }
+        .check-list li.ok span { color: var(--java-green); }
+        .check-list li.missing { border-color: #ffa65755; background: #ffa65710; }
+        .command-row { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; margin: 1rem 0; }
+        .terminal-output {
+            text-align: left; white-space: pre-wrap; border: 1px solid var(--border);
+            border-radius: 8px; background: #0d1117; color: #7ee787; padding: 1rem;
+            font-family: 'JetBrains Mono', monospace; font-size: .82rem; min-height: 120px;
+        }
+        .exam-table {
+            width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .9rem;
+        }
+        .exam-table th, .exam-table td {
+            border: 1px solid var(--border); padding: .55rem .65rem; vertical-align: top;
+        }
+        .exam-table th { color: var(--text); background: #1c2128; text-align: left; }
+        @media (max-width: 760px) {
+            .gni-grid { grid-template-columns: 1fr; }
+            .nav-inner { align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="." class="nav-logo" id="nav-home">JFX { }</a>
+            <a href="index.php" class="nav-logo" style="margin-left:-0.5rem;opacity:.4;font-size:.8rem;">&larr; Tutti</a>
+            <div class="nav-links">
+                <a class="nav-link active" data-page="obiettivo">Obiettivo</a>
+                <a class="nav-link" data-page="setup">Setup</a>
+                <a class="nav-link" data-page="maven">Maven</a>
+                <a class="nav-link" data-page="javafx">JavaFX</a>
+                <a class="nav-link" data-page="ide">IDE</a>
+                <a class="nav-link" data-page="gara">GNI</a>
+                <a class="nav-link" data-page="quiz">Quiz</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="hero" id="hero">
+            <div class="hero-badge">GNI &mdash; JavaFX + Maven</div>
+            <h1>JavaFX con Maven in <span class="highlight">IntelliJ e VSCode</span></h1>
+            <p class="hero-sub">
+                Tutorial operativo per costruire un'app desktop Java decente: struttura pulita,
+                run/debug affidabile, controlli base, eventi e consegna senza panico.
+            </p>
+        </header>
+
+        <section class="section page" id="page-obiettivo" data-index="1">
+            <div class="section-number">1</div>
+            <h2>Cosa devi saper fare per una GNI</h2>
+            <p>
+                JavaFX non serve per fare effetti speciali: serve per consegnare una piccola
+                applicazione desktop funzionante. L'obiettivo realistico e' saper aprire una finestra,
+                organizzare i controlli, leggere input, reagire ai click e tenere il progetto Maven
+                eseguibile anche su un altro PC.
+            </p>
+
+            <div class="gni-grid">
+                <div class="gni-card">
+                    <strong>Base solida</strong>
+                    <span>JDK 17+, Maven, struttura standard e classe che estende <code>Application</code>.</span>
+                </div>
+                <div class="gni-card">
+                    <strong>Interfaccia utile</strong>
+                    <span><code>VBox</code>, <code>HBox</code>, <code>GridPane</code>, <code>TextField</code>, <code>Button</code>, <code>TableView</code>.</span>
+                </div>
+                <div class="gni-card">
+                    <strong>Logica separata</strong>
+                    <span>Non mettere tutto nel bottone: crea classi modello e metodi chiari.</span>
+                </div>
+            </div>
+
+            <div class="java-tip">
+                <span class="tip-label">GNI</span>
+                <span class="tip-text">
+                    Per una gara conta piu' un'app semplice, stabile e leggibile che una GUI enorme.
+                    Punta a una schermata principale completa, validazione input e salvataggio dati se richiesto.
+                </span>
+            </div>
+
+            <div class="mini-quiz" data-quiz-id="q-target">
+                <h3 style="margin-top:2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">Qual e' la priorita' in una prova pratica?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-target-1" value="a"> Animazioni complesse e CSS avanzato</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-target-1" value="b"> App funzionante, leggibile e ricostruibile con Maven</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-target-1" value="c"> Usare piu' librerie possibili</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display:none;"></div>
+            </div>
+        </section>
+
+        <section class="section page hidden" id="page-setup" data-index="2">
+            <div class="section-number">2</div>
+            <h2>Installazione minima: JDK, Maven, IDE</h2>
+            <p>
+                Prima della gara verifica questi comandi da terminale. Se falliscono, l'IDE puo'
+                sembrare rotto anche quando il progetto e' corretto.
+            </p>
+
+            <div class="code-block">
+                <div class="code-header"><div class="dots"><span></span><span></span><span></span></div>Verifica ambiente</div>
+                <pre><span class="cm"># Java: usa JDK 17 o superiore</span>
+<span class="at">java -version</span>
+<span class="at">javac -version</span>
+
+<span class="cm"># Maven: deve rispondere senza errori</span>
+<span class="at">mvn -version</span></pre>
+            </div>
+
+            <table class="exam-table">
+                <thead><tr><th>Componente</th><th>Cosa installare</th><th>Errore tipico</th></tr></thead>
+                <tbody>
+                    <tr><td>JDK</td><td>Temurin/OpenJDK 17 o 21</td><td><code>JAVA_HOME</code> punta a una JRE o a un JDK vecchio.</td></tr>
+                    <tr><td>Maven</td><td>Maven 3.8+</td><td><code>mvn</code> non e' nel <code>PATH</code>.</td></tr>
+                    <tr><td>IntelliJ</td><td>Community va bene</td><td>Project SDK non impostato.</td></tr>
+                    <tr><td>VSCode</td><td>Extension Pack for Java</td><td>Workspace aperto nella cartella sbagliata.</td></tr>
+                </tbody>
+            </table>
+
+            <div class="demo-zone">
+                <p class="demo-label">Comandi gara</p>
+                <div class="command-row">
+                    <select id="command-select" class="copyless-select">
+                        <option value="run">Esegui JavaFX</option>
+                        <option value="test">Lancia test</option>
+                        <option value="package">Crea jar</option>
+                    </select>
+                    <span style="color:var(--text-muted);font-size:.9rem;">Cambia comando e controlla l'output atteso.</span>
+                </div>
+                <div class="terminal-output" id="command-output"></div>
+            </div>
+        </section>
+
+        <section class="section page hidden" id="page-maven" data-index="3">
+            <div class="section-number">3</div>
+            <h2>Progetto Maven: struttura giusta</h2>
+            <p>
+                Maven vuole una struttura precisa. Se la rispetti, IntelliJ, VSCode e terminale
+                vedono lo stesso progetto.
+            </p>
+
+            <div class="demo-zone">
+                <p class="demo-label">Esplora struttura progetto</p>
+                <div class="file-tree">
+                    <span class="file-node selected" data-explain="Cartella radice: apri questa nell'IDE, non src e non target.">gni-javafx/</span>
+                    <span class="file-node" data-explain="Il pom.xml descrive dipendenze, versione Java, plugin e mainClass.">|- pom.xml</span>
+                    <span class="file-node" data-explain="Qui vanno le classi Java principali.">|- src/main/java/it/zuc/gni/</span>
+                    <span class="file-node" data-explain="App.java estende javafx.application.Application e apre lo Stage.">|  |- App.java</span>
+                    <span class="file-node" data-explain="Launcher.java contiene il main classico e chiama Application.launch.">|  |- Launcher.java</span>
+                    <span class="file-node" data-explain="Qui metti classi di dominio: Studente, Gara, Risultato, Squadra.">|  |- model/</span>
+                    <span class="file-node" data-explain="Qui stanno CSS, immagini, file FXML o dati di esempio.">|- src/main/resources/</span>
+                    <span class="file-node" data-explain="Qui vanno test JUnit se la traccia lo richiede o se vuoi verificare la logica.">|- src/test/java/</span>
+                </div>
+                <p id="file-explain" style="margin:0;color:var(--java-blue);">Cartella radice: apri questa nell'IDE, non src e non target.</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header"><div class="dots"><span></span><span></span><span></span></div>Creazione rapida da terminale</div>
+                <pre><span class="at">mkdir gni-javafx</span>
+<span class="at">cd gni-javafx</span>
+<span class="at">mkdir -p src/main/java/it/zuc/gni src/main/resources src/test/java</span>
+<span class="at">touch pom.xml</span></pre>
+            </div>
+
+            <h3>pom.xml essenziale</h3>
+            <div class="code-block">
+                <div class="code-header"><div class="dots"><span></span><span></span><span></span></div>pom.xml funzionante</div>
+                <pre><span class="tg">&lt;project</span> <span class="at">xmlns</span>=<span class="str">"http://maven.apache.org/POM/4.0.0"</span>
+         <span class="at">xmlns:xsi</span>=<span class="str">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="at">xsi:schemaLocation</span>=<span class="str">"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;modelVersion&gt;</span>4.0.0<span class="tg">&lt;/modelVersion&gt;</span>
+  <span class="tg">&lt;groupId&gt;</span>it.zuc.gni<span class="tg">&lt;/groupId&gt;</span>
+  <span class="tg">&lt;artifactId&gt;</span>gni-javafx<span class="tg">&lt;/artifactId&gt;</span>
+  <span class="tg">&lt;version&gt;</span>1.0.0<span class="tg">&lt;/version&gt;</span>
+
+  <span class="tg">&lt;properties&gt;</span>
+    <span class="tg">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="tg">&lt;/project.build.sourceEncoding&gt;</span>
+    <span class="tg">&lt;maven.compiler.release&gt;</span>17<span class="tg">&lt;/maven.compiler.release&gt;</span>
+    <span class="tg">&lt;javafx.version&gt;</span>21.0.2<span class="tg">&lt;/javafx.version&gt;</span>
+  <span class="tg">&lt;/properties&gt;</span>
+
+  <span class="tg">&lt;dependencies&gt;</span>
+    <span class="tg">&lt;dependency&gt;</span>
+      <span class="tg">&lt;groupId&gt;</span>org.openjfx<span class="tg">&lt;/groupId&gt;</span>
+      <span class="tg">&lt;artifactId&gt;</span>javafx-controls<span class="tg">&lt;/artifactId&gt;</span>
+      <span class="tg">&lt;version&gt;</span>${javafx.version}<span class="tg">&lt;/version&gt;</span>
+    <span class="tg">&lt;/dependency&gt;</span>
+  <span class="tg">&lt;/dependencies&gt;</span>
+
+  <span class="tg">&lt;build&gt;</span>
+    <span class="tg">&lt;plugins&gt;</span>
+      <span class="tg">&lt;plugin&gt;</span>
+        <span class="tg">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tg">&lt;/groupId&gt;</span>
+        <span class="tg">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="tg">&lt;/artifactId&gt;</span>
+        <span class="tg">&lt;version&gt;</span>3.11.0<span class="tg">&lt;/version&gt;</span>
+      <span class="tg">&lt;/plugin&gt;</span>
+      <span class="tg">&lt;plugin&gt;</span>
+        <span class="tg">&lt;groupId&gt;</span>org.openjfx<span class="tg">&lt;/groupId&gt;</span>
+        <span class="tg">&lt;artifactId&gt;</span>javafx-maven-plugin<span class="tg">&lt;/artifactId&gt;</span>
+        <span class="tg">&lt;version&gt;</span>0.0.8<span class="tg">&lt;/version&gt;</span>
+        <span class="tg">&lt;configuration&gt;</span>
+          <span class="tg">&lt;mainClass&gt;</span>it.zuc.gni.Launcher<span class="tg">&lt;/mainClass&gt;</span>
+        <span class="tg">&lt;/configuration&gt;</span>
+      <span class="tg">&lt;/plugin&gt;</span>
+    <span class="tg">&lt;/plugins&gt;</span>
+  <span class="tg">&lt;/build&gt;</span>
+<span class="tg">&lt;/project&gt;</span></pre>
+            </div>
+
+            <div class="pom-checker">
+                <h3>Controlla il tuo pom.xml</h3>
+                <p>Incolla qui il tuo <code>pom.xml</code>: il checker verifica gli elementi minimi.</p>
+                <textarea id="pom-check-input" spellcheck="false">&lt;project&gt;
+  &lt;groupId&gt;it.zuc.gni&lt;/groupId&gt;
+  &lt;artifactId&gt;gni-javafx&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.openjfx&lt;/groupId&gt;
+      &lt;artifactId&gt;javafx-controls&lt;/artifactId&gt;
+      &lt;version&gt;21.0.2&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;&lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;&lt;configuration&gt;&lt;release&gt;17&lt;/release&gt;&lt;/configuration&gt;&lt;/plugin&gt;
+      &lt;plugin&gt;&lt;artifactId&gt;javafx-maven-plugin&lt;/artifactId&gt;&lt;configuration&gt;&lt;mainClass&gt;it.zuc.gni.Launcher&lt;/mainClass&gt;&lt;/configuration&gt;&lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+&lt;/project&gt;</textarea>
+                <ul class="check-list" id="pom-checklist"></ul>
+            </div>
+        </section>
+
+        <section class="section page hidden" id="page-javafx" data-index="4">
+            <div class="section-number">4</div>
+            <h2>Prima app JavaFX senza FXML</h2>
+            <p>
+                Per una gara conviene partire senza FXML: meno file, meno magia, debug piu' diretto.
+                Quando sei sicuro puoi aggiungere Scene Builder, ma non serve per una prova decente.
+            </p>
+
+            <div class="code-block">
+                <div class="code-header"><div class="dots"><span></span><span></span><span></span></div>Launcher.java</div>
+                <pre><span class="kw">package</span> it.zuc.gni;
+
+<span class="kw">public</span> <span class="kw">class</span> <span class="fn">Launcher</span> {
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="fn">main</span>(String[] args) {
+        App.<span class="fn">main</span>(args);
+    }
+}</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header"><div class="dots"><span></span><span></span><span></span></div>App.java</div>
+                <pre><span class="kw">package</span> it.zuc.gni;
+
+<span class="kw">import</span> javafx.application.Application;
+<span class="kw">import</span> javafx.geometry.Insets;
+<span class="kw">import</span> javafx.scene.Scene;
+<span class="kw">import</span> javafx.scene.control.*;
+<span class="kw">import</span> javafx.scene.layout.*;
+<span class="kw">import</span> javafx.stage.Stage;
+
+<span class="kw">public</span> <span class="kw">class</span> <span class="fn">App</span> <span class="kw">extends</span> Application {
+    <span class="kw">private</span> <span class="kw">final</span> ListView&lt;String&gt; risultati = <span class="kw">new</span> ListView&lt;&gt;();
+
+    @Override
+    <span class="kw">public</span> <span class="kw">void</span> <span class="fn">start</span>(Stage stage) {
+        TextField nome = <span class="kw">new</span> TextField();
+        nome.<span class="fn">setPromptText</span>(<span class="str">"Nome studente"</span>);
+
+        TextField punti = <span class="kw">new</span> TextField();
+        punti.<span class="fn">setPromptText</span>(<span class="str">"Punti"</span>);
+
+        Button aggiungi = <span class="kw">new</span> Button(<span class="str">"Aggiungi"</span>);
+        aggiungi.<span class="fn">setOnAction</span>(event -&gt; <span class="fn">aggiungiRisultato</span>(nome, punti));
+
+        HBox form = <span class="kw">new</span> HBox(8, nome, punti, aggiungi);
+        VBox root = <span class="kw">new</span> VBox(12, <span class="kw">new</span> Label(<span class="str">"Classifica GNI"</span>), form, risultati);
+        root.<span class="fn">setPadding</span>(<span class="kw">new</span> Insets(16));
+
+        stage.<span class="fn">setTitle</span>(<span class="str">"GNI JavaFX"</span>);
+        stage.<span class="fn">setScene</span>(<span class="kw">new</span> Scene(root, 640, 420));
+        stage.<span class="fn">show</span>();
+    }
+
+    <span class="kw">private</span> <span class="kw">void</span> <span class="fn">aggiungiRisultato</span>(TextField nome, TextField punti) {
+        <span class="kw">if</span> (nome.<span class="fn">getText</span>().isBlank() || punti.<span class="fn">getText</span>().isBlank()) {
+            <span class="kw">new</span> Alert(Alert.AlertType.WARNING, <span class="str">"Compila entrambi i campi"</span>).<span class="fn">showAndWait</span>();
+            <span class="kw">return</span>;
+        }
+        risultati.<span class="fn">getItems</span>().<span class="fn">add</span>(nome.<span class="fn">getText</span>() + <span class="str">" - "</span> + punti.<span class="fn">getText</span>() + <span class="str">" punti"</span>);
+        nome.<span class="fn">clear</span>();
+        punti.<span class="fn">clear</span>();
+    }
+
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="fn">main</span>(String[] args) {
+        <span class="fn">launch</span>(args);
+    }
+}</pre>
+            </div>
+
+            <div class="java-tip">
+                <span class="tip-label">Errore comune</span>
+                <span class="tip-text">
+                    Se vedi "JavaFX runtime components are missing", non lanciare la classe con il pulsante Java generico:
+                    usa <code>mvn javafx:run</code> o configura l'IDE per usare il goal Maven.
+                </span>
+            </div>
+        </section>
+
+        <section class="section page hidden" id="page-ide" data-index="5">
+            <div class="section-number">5</div>
+            <h2>IntelliJ e VSCode: stesso progetto, due flussi</h2>
+            <p>
+                Il progetto deve funzionare prima da terminale. Poi l'IDE diventa solo un aiuto per
+                scrivere, completare e fare debug.
+            </p>
+
+            <div class="ide-tabs">
+                <button class="ide-tab active" data-ide="intellij">IntelliJ</button>
+                <button class="ide-tab" data-ide="vscode">VSCode</button>
+            </div>
+
+            <div class="ide-panel active" id="ide-intellij">
+                <h3>IntelliJ IDEA Community</h3>
+                <ol>
+                    <li>Apri la cartella che contiene <code>pom.xml</code> con <strong>File &gt; Open</strong>.</li>
+                    <li>Quando IntelliJ chiede se importare Maven, accetta.</li>
+                    <li>Controlla <strong>File &gt; Project Structure &gt; Project SDK</strong>: deve essere JDK 17+.</li>
+                    <li>Apri il pannello <strong>Maven</strong>, espandi <code>Plugins &gt; javafx</code> e lancia <code>javafx:run</code>.</li>
+                    <li>Per debug: crea una Run Configuration Maven con command line <code>javafx:run</code>.</li>
+                </ol>
+                <div class="code-block">
+                    <div class="code-header"><div class="dots"><span></span><span></span><span></span></div>Configurazione Maven in IntelliJ</div>
+                    <pre><span class="at">Run &gt; Edit Configurations &gt; + &gt; Maven</span>
+<span class="at">Working directory:</span> cartella del progetto
+<span class="at">Command line:</span> javafx:run
+<span class="at">JRE:</span> Project JDK 17+</pre>
+                </div>
+            </div>
+
+            <div class="ide-panel" id="ide-vscode">
+                <h3>Visual Studio Code</h3>
+                <ol>
+                    <li>Installa <strong>Extension Pack for Java</strong> e <strong>Maven for Java</strong>.</li>
+                    <li>Apri la cartella radice del progetto, non il singolo file Java.</li>
+                    <li>Attendi "Importing Maven projects". Se non parte, usa <strong>Java: Clean Java Language Server Workspace</strong>.</li>
+                    <li>Nel pannello Maven lancia <code>Plugins &gt; javafx &gt; javafx:run</code>.</li>
+                    <li>Se il pulsante Run sopra <code>main</code> fallisce, non e' grave: per JavaFX usa Maven.</li>
+                </ol>
+                <div class="code-block">
+                    <div class="code-header"><div class="dots"><span></span><span></span><span></span></div>.vscode/settings.json opzionale</div>
+                    <pre>{
+  <span class="str">"java.configuration.updateBuildConfiguration"</span>: <span class="str">"automatic"</span>,
+  <span class="str">"java.compile.nullAnalysis.mode"</span>: <span class="str">"automatic"</span>
+}</pre>
+                </div>
+            </div>
+
+            <div class="mini-quiz" data-quiz-id="q-ide">
+                <h3 style="margin-top:2rem;">Quiz veloce</h3>
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-text">Se IntelliJ/VSCode non trova JavaFX ma <code>mvn javafx:run</code> funziona, cosa controlli?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-ide-1" value="a"> Cambio linguaggio</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-ide-1" value="b"> Cancello <code>pom.xml</code></label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-ide-1" value="c"> Import Maven, JDK del progetto e configurazione Maven run</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback" style="display:none;"></div>
+            </div>
+        </section>
+
+        <section class="section page hidden" id="page-gara" data-index="6">
+            <div class="section-number">6</div>
+            <h2>Schema da usare in gara</h2>
+            <p>
+                Quando arriva una traccia, non partire dalla grafica. Parti dai dati e dalle azioni.
+                Poi costruisci una finestra che permetta di usare quelle azioni.
+            </p>
+
+            <table class="exam-table">
+                <thead><tr><th>Fase</th><th>Cosa fare</th><th>Output concreto</th></tr></thead>
+                <tbody>
+                    <tr><td>1. Modello</td><td>Identifica entita' e campi.</td><td><code>Studente</code>, <code>Squadra</code>, <code>Risultato</code>.</td></tr>
+                    <tr><td>2. Logica</td><td>Scrivi metodi senza JavaFX.</td><td><code>aggiungi</code>, <code>cerca</code>, <code>ordina</code>, <code>calcolaTotale</code>.</td></tr>
+                    <tr><td>3. GUI</td><td>Collega campi e bottoni ai metodi.</td><td><code>TextField</code>, <code>ComboBox</code>, <code>TableView</code>.</td></tr>
+                    <tr><td>4. Validazione</td><td>Blocca input vuoti o numeri non validi.</td><td><code>Alert</code> chiaro e nessun crash.</td></tr>
+                    <tr><td>5. Consegna</td><td>Prova da terminale pulito.</td><td><code>mvn clean javafx:run</code> riuscito.</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Controlli JavaFX da conoscere</h3>
+            <ul>
+                <li><code>Label</code>: testo statico.</li>
+                <li><code>TextField</code> e <code>TextArea</code>: input breve o lungo.</li>
+                <li><code>Button</code>: azione con <code>setOnAction</code>.</li>
+                <li><code>ComboBox&lt;T&gt;</code>: scelta da elenco.</li>
+                <li><code>ListView&lt;T&gt;</code>: elenco semplice.</li>
+                <li><code>TableView&lt;T&gt;</code>: dati tabellari, utile per classifiche e gestionali.</li>
+                <li><code>VBox</code>, <code>HBox</code>, <code>BorderPane</code>, <code>GridPane</code>: layout base.</li>
+            </ul>
+
+            <div class="java-tip">
+                <span class="tip-label">Strategia</span>
+                <span class="tip-text">
+                    Se il tempo stringe, consegna una GUI meno bella ma completa: input, lista dati,
+                    operazione principale, messaggio di errore e istruzioni per esecuzione.
+                </span>
+            </div>
+        </section>
+
+        <section class="section page hidden" id="page-quiz" data-index="7">
+            <div class="section-number">7</div>
+            <h2>Quiz finale</h2>
+            <p>Controllo rapido prima di usare il tutorial come traccia di ripasso.</p>
+
+            <div class="quiz-container">
+                <div class="quiz-question" data-correct="b">
+                    <p class="q-text">1. Quale comando deve funzionare da terminale per eseguire il progetto?</p>
+                    <label class="quiz-option"><input type="radio" name="q1" value="a"> <code>java App.java</code></label>
+                    <label class="quiz-option"><input type="radio" name="q1" value="b"> <code>mvn clean javafx:run</code></label>
+                    <label class="quiz-option"><input type="radio" name="q1" value="c"> <code>npm start</code></label>
+                </div>
+                <div class="quiz-question" data-correct="c">
+                    <p class="q-text">2. Dove va il codice sorgente principale?</p>
+                    <label class="quiz-option"><input type="radio" name="q2" value="a"> <code>target/classes</code></label>
+                    <label class="quiz-option"><input type="radio" name="q2" value="b"> nella stessa cartella del jar</label>
+                    <label class="quiz-option"><input type="radio" name="q2" value="c"> <code>src/main/java</code></label>
+                </div>
+                <div class="quiz-question" data-correct="a">
+                    <p class="q-text">3. Quale plugin lancia JavaFX con Maven?</p>
+                    <label class="quiz-option"><input type="radio" name="q3" value="a"> <code>javafx-maven-plugin</code></label>
+                    <label class="quiz-option"><input type="radio" name="q3" value="b"> <code>maven-surefire-plugin</code></label>
+                    <label class="quiz-option"><input type="radio" name="q3" value="c"> <code>maven-site-plugin</code></label>
+                </div>
+                <div class="quiz-question" data-correct="b">
+                    <p class="q-text">4. In gara, dove conviene mettere la logica di dominio?</p>
+                    <label class="quiz-option"><input type="radio" name="q4" value="a"> Dentro tutti gli handler dei bottoni</label>
+                    <label class="quiz-option"><input type="radio" name="q4" value="b"> In classi e metodi separati, richiamati dalla GUI</label>
+                    <label class="quiz-option"><input type="radio" name="q4" value="c"> Nel file CSS</label>
+                </div>
+                <div class="quiz-question" data-correct="c">
+                    <p class="q-text">5. Quale controllo e' piu' adatto a una classifica tabellare?</p>
+                    <label class="quiz-option"><input type="radio" name="q5" value="a"> <code>Label</code></label>
+                    <label class="quiz-option"><input type="radio" name="q5" value="b"> <code>Button</code></label>
+                    <label class="quiz-option"><input type="radio" name="q5" value="c"> <code>TableView</code></label>
+                </div>
+                <div class="quiz-question" data-correct="a">
+                    <p class="q-text">6. Se il Run dell'IDE fallisce ma Maven funziona, cosa fai?</p>
+                    <label class="quiz-option"><input type="radio" name="q6" value="a"> Configuro una run Maven con <code>javafx:run</code></label>
+                    <label class="quiz-option"><input type="radio" name="q6" value="b"> Elimino Maven</label>
+                    <label class="quiz-option"><input type="radio" name="q6" value="c"> Sposto tutto in <code>target</code></label>
+                </div>
+            </div>
+
+            <button id="btn-submit-quiz" class="btn-primary">Correggi quiz</button>
+            <div class="quiz-score" id="quiz-score">
+                <div class="score-value" id="score-val">0 / 6</div>
+                <div class="score-label" id="score-label"></div>
+            </div>
+        </section>
+
+        <div class="pagination">
+            <button class="page-btn" id="btn-prev">&larr; Precedente</button>
+            <div class="page-indicator">
+                <span class="page-dots" id="page-dots"></span>
+                <input type="number" id="page-input" min="1" value="1">
+            </div>
+            <button class="page-btn" id="btn-next">Successiva &rarr;</button>
+        </div>
+    </div>
+
+    <script src="javafx-maven.js"></script>
+</body>
+</html>

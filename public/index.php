@@ -15,5 +15,6 @@ require BASE_PATH . '/public/routes.php';
 $url = $_SERVER['REQUEST_URI'];
 if (!$router->dispatch($url)) {
     header('HTTP/1.0 404 Not Found');
+    echo $url. '</br>';
     require BASE_PATH . '/views/404.php';
 }

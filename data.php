@@ -73,4 +73,14 @@ $tutorials = [
         'pages'   => '4 pagine',
         'file'    => 'packet-tracer.html',
     ],
+    [
+        'id'      => 7,
+        'title'   => 'JavaFX con Maven — IntelliJ e VSCode',
+        'category' => 'java',
+        'level'   => 'medium',
+        'desc'    => 'Setup GNI, struttura Maven, JavaFX, run/debug e packaging essenziale.',
+        'tags'    => ['JavaFX', 'Maven', 'IDE'],
+        'pages'   => '7 pagine',
+        'file'    => 'javafx-maven.html',
+    ],
 ];

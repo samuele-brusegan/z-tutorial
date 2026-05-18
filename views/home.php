@@ -5,6 +5,7 @@
 $catNames = [
     'js'  => 'JavaScript', 'html' => 'HTML',   'css'  => 'CSS',
     'db'  => 'Database',   'git'  => 'Git',    'net'  => 'Networking',
+    'networking' => 'Networking', 'java' => 'Java',
 ];
 $levelNames = [
     'easy'   => 'facile',  'medium' => 'medio',  'hard' => 'difficile',
@@ -117,6 +118,8 @@ $levelNames = [
         .card-category.db    { color: var(--c-purple);   background: #bc8cff18; }
         .card-category.git   { color: var(--c-green);    background: #3fb95018; }
         .card-category.net   { color: var(--c-pink);     background: #ff7b7218; }
+        .card-category.networking { color: var(--c-pink); background: #ff7b7218; }
+        .card-category.java  { color: var(--c-blue);     background: #58a6ff18; }
         .card-title {
             font-family: 'Space Mono', monospace; font-size: 1rem;
             font-weight: 700; line-height: 1.35; margin-bottom: 0.4rem;
@@ -177,6 +180,8 @@ $levelNames = [
         <button class="filter-btn" data-filter="db">Database</button>
         <button class="filter-btn" data-filter="git">Git</button>
         <button class="filter-btn" data-filter="net">Networking</button>
+        <button class="filter-btn" data-filter="networking">Packet Tracer</button>
+        <button class="filter-btn" data-filter="java">Java</button>
         <button class="filter-btn" data-filter="easy">Facile</button>
         <button class="filter-btn" data-filter="medium">Medio</button>
         <button class="filter-btn" data-filter="hard">Difficile</button>
