@@ -26,18 +26,24 @@ URL: http://z-tutorial/
 ## 📁 Struttura
 
 ```
-├── data.php                  # Dati dei tutorial
-├── src/Router.php           # Classe router
-├── public/
-│   ├── index.php           # Front controller
-│   └── routes.php          # Definizione rotte
-├── views/                  # Template PHP
+├── data.php                    # Dati dei tutorial
+├── src/Router.php              # Classe router
+├── views/                      # Template PHP
 │   ├── home.php
 │   ├── tutorial.php
 │   └── 404.php
-├── js-tutorial.html       # Tutorial JavaScript
-├── tutorial.js            # Logica tutorial JS
-└── styles.css             # Stili CSS
+└── public/                     # Document root
+    ├── index.php               # Front controller
+    ├── routes.php              # Definizione rotte
+    ├── tutorials/              # Pagine HTML dei tutorial
+    │   ├── js-tutorial.html
+    │   ├── matematica.html
+    │   ├── packet-tracer.html
+    │   ├── javafx-maven.html
+    │   └── grafi.html
+    └── assets/
+        ├── css/                # styles.css, matematica.css, pt-styles.css
+        └── js/                 # tutorial.js, matematica.js, pt-script.js, javafx-maven.js
 ```
 
 ## 🎨 Design

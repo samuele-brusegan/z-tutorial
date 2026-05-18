@@ -11,7 +11,7 @@ $tutorials = [
         'desc'    => 'Import script, eventi, DOM, Promise, Fetch API e quiz finale.',
         'tags'    => ['async/await', 'DOM', 'fetch'],
         'pages'   => '6 pagine',
-        'file'    => 'js-tutorial.html',
+        'file'    => 'tutorials/js-tutorial.html',
     ],
     [
         'id'      => 1,
@@ -71,7 +71,7 @@ $tutorials = [
         'desc'    => 'Cos\'è Packet Tracer, interfaccia, dispositivi, cavi e primo topology basics.',
         'tags'    => ['Cisco', 'topologia', 'switch', 'router'],
         'pages'   => '4 pagine',
-        'file'    => 'packet-tracer.html',
+        'file'    => 'tutorials/packet-tracer.html',
     ],
     [
         'id'      => 7,
@@ -81,7 +81,7 @@ $tutorials = [
         'desc'    => 'Setup GNI, struttura Maven, JavaFX, run/debug e packaging essenziale.',
         'tags'    => ['JavaFX', 'Maven', 'IDE'],
         'pages'   => '7 pagine',
-        'file'    => 'javafx-maven.html',
+        'file'    => 'tutorials/javafx-maven.html',
     ],
     [
 	'id'	   => 8,
@@ -91,7 +91,7 @@ $tutorials = [
         'desc'     => 'BFS, DFS, Dijkstra, Bellman-Ford, Prim, Kruskal: animazioni, tabelle di traccia e spiegazioni passo-passo.',
         'tags'     => ['BFS', 'DFS', 'Dijkstra', 'MST', 'cammini minimi'],
         'pages'    => 'interattivo',
-        'file'     => 'grafi.html',
+        'file'     => 'tutorials/grafi.html',
     ],
     [
         'id'       => 9,
@@ -101,6 +101,6 @@ $tutorials = [
         'desc'     => 'Teoremi del calcolo differenziale (Rolle, Lagrange, Cauchy, De L\'Hôpital), flessi, problemi di massimo e minimo con grafici interattivi.',
         'tags'     => ['analisi', 'derivate', 'flessi', 'max/min'],
         'pages'    => '6 pagine',
-        'file'     => 'matematica.html',
+        'file'     => 'tutorials/matematica.html',
     ],
 ];
