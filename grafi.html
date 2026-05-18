@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Grafi & Algoritmi — Visualizzazione</title>
+<style>
+  :root{
+    --bg:#0f1220; --panel:#171a2e; --ink:#e9ecf8; --muted:#9aa3c7;
+    --accent:#7cf3a0; --accent2:#7aa2ff; --warn:#ffb86b; --bad:#ff6b8a;
+    --edge:#3a4170; --edge-tree:#7cf3a0; --edge-path:#ffb86b;
+    --node:#2a3061; --node-visited:#7aa2ff; --node-frontier:#ffb86b;
+    --node-done:#7cf3a0; --node-start:#ff6b8a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Inter,sans-serif;overflow:hidden}
+  header{padding:10px 20px;border-bottom:1px solid #222848}
+  header h1{margin:0;font-size:17px;letter-spacing:.3px}
+  header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+  main{display:grid;grid-template-columns:280px 1fr 340px;height:calc(100vh - 50px)}
+  aside.left, aside.right{background:var(--panel);padding:12px;overflow-y:auto}
+  aside.left{border-right:1px solid #222848}
+  aside.right{border-left:1px solid #222848;display:flex;flex-direction:column;gap:10px}
+  aside h2{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:12px 0 6px}
+  aside h2:first-child{margin-top:0}
+  .algo{display:block;width:100%;text-align:left;background:#1d2244;color:var(--ink);border:1px solid #2a3061;border-radius:8px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:12.5px}
+  .algo:hover{border-color:var(--accent2)}
+  .algo.active{background:linear-gradient(135deg,#2a3a8a,#3a2a8a);border-color:var(--accent2)}
+  .controls{display:flex;gap:5px;flex-wrap:wrap}
+  button.ctrl{background:#2a3061;color:var(--ink);border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px}
+  button.ctrl:hover{background:#3a4180}
+  button.ctrl.primary{background:var(--accent2);color:#0a0d20;font-weight:600}
+  button.ctrl.primary:hover{background:#9ab4ff}
+  .stage{display:flex;flex-direction:column;min-width:0}
+  .canvas-wrap{flex:1;position:relative;min-height:0}
+  svg{width:100%;height:100%;display:block;background:radial-gradient(ellipse at top,#1a1f3d 0%,#0f1220 70%)}
+  .bottom{border-top:1px solid #222848;background:#0c0f1f;padding:6px 14px;max-height:140px;overflow-y:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:#c8cdee}
+  .bottom .step{margin:2px 0;color:#d6daf2}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding:4px 14px;border-top:1px solid #222848;background:#0c0f1f}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .slider{display:flex;align-items:center;gap:6px;margin-top:6px;color:var(--muted);font-size:11px}
+  input[type=range]{flex:1}
+
+  /* Right aside cards */
+  .card{background:#13162a;border:1px solid #222848;border-radius:10px;padding:10px 12px}
+  .card h3{margin:0 0 6px;font-size:13.5px;color:var(--accent)}
+  .card p{margin:5px 0;font-size:12.5px;line-height:1.5;color:#d6daf2}
+  .card code{background:#0a0d20;padding:1px 5px;border-radius:4px;color:var(--accent2);font-size:11.5px}
+
+  /* Distance/iteration table */
+  .iter-wrap{overflow-x:auto;max-width:100%}
+  table.iter-table{border-collapse:collapse;font-size:11.5px;font-family:ui-monospace,monospace}
+  table.iter-table th,table.iter-table td{padding:4px 6px;border:1px solid #222848;text-align:center;white-space:nowrap}
+  table.iter-table thead th{color:var(--muted);font-weight:600;font-size:11px;background:#0c0f1f;position:sticky;top:0}
+  table.iter-table thead th.src{color:var(--node-start)}
+  table.iter-table tbody th{color:var(--accent2);font-weight:600;background:#0c0f1f;position:sticky;left:0;text-align:left;padding:4px 8px}
+  table.iter-table td{color:#d6daf2;min-width:36px}
+  table.iter-table td.inf{color:var(--muted)}
+  table.iter-table td .pi{color:var(--muted);font-size:10px}
+  table.iter-table td.changed{background:rgba(255,184,107,.18);color:var(--warn);font-weight:600}
+  table.iter-table tbody tr.current th{color:#fff;background:#1d2244}
+
+  /* MST table */
+  table.mst-table{width:100%;border-collapse:collapse;font-size:12px;font-family:ui-monospace,monospace}
+  table.mst-table th,table.mst-table td{padding:4px 6px;border-bottom:1px solid #222848;text-align:center}
+  table.mst-table th{color:var(--muted);font-weight:500;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em}
+  table.mst-table tr.accepted td{color:var(--accent)}
+  table.mst-table tr.rejected td{color:var(--bad);text-decoration:line-through;opacity:.7}
+  .mst-total{margin-top:6px;text-align:right;font-size:12px;color:var(--accent);font-weight:600}
+
+  /* SVG styling */
+  .edge{stroke:var(--edge);stroke-width:2.2;transition:stroke .3s,stroke-width .3s}
+  .edge.considered{stroke:var(--warn);stroke-width:3}
+  .edge.tree{stroke:var(--edge-tree);stroke-width:3.5}
+  .edge.path{stroke:var(--edge-path);stroke-width:4}
+  .edge.rejected{stroke:#ff6b8a;stroke-dasharray:4 4;opacity:.5}
+  .edge-label{fill:#c8cdee;font-size:12px;font-family:ui-monospace,monospace;pointer-events:none}
+  .edge-label-bg{fill:#0f1220;opacity:.85}
+  .node circle{fill:var(--node);stroke:#4a5290;stroke-width:2;transition:fill .3s,stroke .3s,r .25s}
+  .node.start circle{fill:var(--node-start);stroke:#fff}
+  .node.visited circle{fill:var(--node-visited)}
+  .node.frontier circle{fill:var(--node-frontier)}
+  .node.done circle{fill:var(--node-done)}
+  .node.current circle{stroke:#fff;stroke-width:4}
+  .node text.id{fill:#0a0d20;font-weight:700;font-size:14px;text-anchor:middle;dominant-baseline:central;font-family:ui-sans-serif}
+  .node text.dist{fill:#fff;font-size:11px;text-anchor:middle;font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<header>
+  <h1>Grafi & Algoritmi — Visualizzazione interattiva</h1>
+  <p>Scegli un algoritmo a sinistra. Tutto resta visibile insieme: grafo al centro, descrizione e tabella a destra.</p>
+</header>
+<main>
+  <aside class="left">
+    <h2>Concetti</h2>
+    <button class="algo" data-algo="intro">Cos'è un grafo</button>
+    <button class="algo" data-algo="spanning">Spanning tree & MST</button>
+    <button class="algo" data-algo="paths">Cammini minimi</button>
+    <button class="algo" data-algo="overview">📋 Riepilogo algoritmi</button>
+
+    <h2>Visite</h2>
+    <button class="algo" data-algo="bfs">BFS</button>
+    <button class="algo" data-algo="dfs">DFS</button>
+
+    <h2>Cammini minimi</h2>
+    <button class="algo" data-algo="dijkstra">Dijkstra</button>
+    <button class="algo" data-algo="bellman">Bellman-Ford</button>
+
+    <h2>MST</h2>
+    <button class="algo" data-algo="prim">Prim</button>
+    <button class="algo" data-algo="kruskal">Kruskal</button>
+
+    <h2>Controlli</h2>
+    <div class="controls">
+      <button class="ctrl primary" id="play">▶ Play</button>
+      <button class="ctrl" id="step">⏭ Step</button>
+      <button class="ctrl" id="reset">⟲ Reset</button>
+    </div>
+    <div class="slider">
+      <span>Vel.</span>
+      <input type="range" id="speed" min="100" max="1500" value="700">
+    </div>
+    <h2>Sorgente</h2>
+    <div class="controls" id="src-buttons"></div>
+  </aside>
+
+  <section class="stage">
+    <div class="canvas-wrap">
+      <svg id="svg" viewBox="0 0 900 560" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--node-start)"></i>sorgente</span>
+      <span><i class="dot" style="background:var(--node-frontier)"></i>in coda</span>
+      <span><i class="dot" style="background:var(--node-visited)"></i>visitato</span>
+      <span><i class="dot" style="background:var(--node-done)"></i>finalizzato</span>
+      <span><i class="dot" style="background:var(--edge-tree)"></i>albero/MST</span>
+      <span><i class="dot" style="background:var(--edge-path)"></i>cammino minimo</span>
+    </div>
+    <div class="bottom" id="log"></div>
+  </section>
+
+  <aside class="right">
+    <div class="card" id="desc-card"></div>
+    <div class="card" id="table-card" style="display:none">
+      <h3 id="table-title">Distanze dalla sorgente</h3>
+      <div id="table-container"></div>
+    </div>
+  </aside>
+</main>
+
+<script>
+// =================== GRAFI ===================
+const NODES = [
+  {id:'A', x:120, y:140},{id:'B', x:300, y: 70},{id:'C', x:500, y:120},{id:'D', x:720, y: 80},
+  {id:'E', x:220, y:300},{id:'F', x:430, y:280},{id:'G', x:640, y:260},{id:'H', x:780, y:420},
+  {id:'I', x:330, y:470},{id:'J', x:560, y:450},
+];
+const EDGES = [
+  ['A','B',4],['A','E',3],
+  ['B','C',5],['B','E',2],
+  ['C','D',6],['C','F',4],['C','G',3],
+  ['D','G',2],['D','H',7],
+  ['E','F',5],['E','I',6],
+  ['F','G',4],['F','I',3],['F','J',5],
+  ['G','H',3],['G','J',2],
+  ['H','J',4],
+  ['I','J',6],
+];
+// Bellman-Ford: esempio classico (CLRS) con layout dedicato
+const BF_NODES = [
+  {id:'s', x:140, y:280},
+  {id:'t', x:380, y:130},
+  {id:'x', x:680, y:130},
+  {id:'y', x:380, y:430},
+  {id:'z', x:680, y:430},
+];
+const DIGRAPH_EDGES = [
+  ['s','t', 6],['s','y', 7],
+  ['t','x', 5],['t','y', 8],['t','z',-4],
+  ['x','t',-2],
+  ['y','x',-3],['y','z', 9],
+  ['z','s', 2],['z','x', 7],
+];
+
+// =================== STATO ===================
+const svg = document.getElementById('svg');
+const log = document.getElementById('log');
+const descCard = document.getElementById('desc-card');
+const tableCard = document.getElementById('table-card');
+const tableContainer = document.getElementById('table-container');
+const tableTitle = document.getElementById('table-title');
+let edgesData, nodesData, directed=false;
+let timer=null, queueSteps=[], stepIdx=0, currentAlgo='intro', source='A';
+let speed = 700;
+document.getElementById('speed').oninput = e=>{speed=+e.target.value};
+
+function svgEl(tag, attrs={}){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e}
+
+function renderGraph(){
+  svg.innerHTML='';
+  const defs = svgEl('defs');
+  defs.innerHTML = `<marker id="arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9aa3c7"/></marker>`;
+  svg.appendChild(defs);
+  const gE = svgEl('g'); svg.appendChild(gE);
+  const gL = svgEl('g'); svg.appendChild(gL);
+  const gN = svgEl('g'); svg.appendChild(gN);
+  const showWeights = !['bfs','dfs'].includes(currentAlgo);
+  if(!showWeights) gL.style.display='none';
+
+  edgesData.forEach((e,i)=>{
+    const a = nodesData.find(n=>n.id===e[0]), b=nodesData.find(n=>n.id===e[1]);
+    if(!a||!b) return;
+    let x1=a.x,y1=a.y,x2=b.x,y2=b.y;
+    let mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    if(directed){
+      const hasRev = edgesData.some(ee=>ee[0]===e[1]&&ee[1]===e[0]);
+      if(hasRev){
+        // shift line + label perpendicular to separate the two directions
+        const dx=b.x-a.x, dy=b.y-a.y, len=Math.hypot(dx,dy)||1;
+        const off=14;
+        const nx=-dy/len*off, ny=dx/len*off;
+        x1+=nx; y1+=ny; x2+=nx; y2+=ny;
+        mx += nx*1.2; my += ny*1.2;
+      }
+    }
+    const line = svgEl('line',{x1,y1,x2,y2,class:'edge','data-id':i});
+    if(directed) line.setAttribute('marker-end','url(#arrow)');
+    gE.appendChild(line);
+    const wStr = String(e[2]);
+    const wWidth = Math.max(22, wStr.length*10);
+    const bg = svgEl('rect',{x:mx-wWidth/2,y:my-10,width:wWidth,height:16,rx:4,class:'edge-label-bg'});
+    const txt = svgEl('text',{x:mx,y:my+1,class:'edge-label','text-anchor':'middle','dominant-baseline':'central'});
+    txt.textContent = wStr;
+    if(typeof e[2]==='number' && e[2]<0) txt.setAttribute('fill','#ff6b8a');
+    gL.appendChild(bg); gL.appendChild(txt);
+  });
+
+  nodesData.forEach(n=>{
+    const g = svgEl('g',{class:'node','data-id':n.id,transform:`translate(${n.x},${n.y})`});
+    g.appendChild(svgEl('circle',{r:20}));
+    const t = svgEl('text',{class:'id'}); t.textContent=n.id; g.appendChild(t);
+    const d = svgEl('text',{class:'dist',y:-30}); d.textContent=''; g.appendChild(d);
+    g.style.cursor='pointer';
+    g.onclick=()=>{source=n.id; run();};
+    gN.appendChild(g);
+  });
+}
+
+function setNodeClass(id, cls){
+  const g = svg.querySelector(`g.node[data-id="${id}"]`);
+  if(!g) return;
+  g.classList.remove('start','visited','frontier','done','current');
+  cls.split(' ').filter(Boolean).forEach(c=>g.classList.add(c));
+}
+function setNodeDist(id, v){
+  const g = svg.querySelector(`g.node[data-id="${id}"] text.dist`);
+  if(g) g.textContent = v===Infinity?'∞':v;
+}
+function setEdgeClass(i, cls){
+  const e = svg.querySelector(`line.edge[data-id="${i}"]`);
+  if(!e) return;
+  e.classList.remove('considered','tree','path','rejected');
+  if(cls) e.classList.add(cls);
+}
+function findEdgeIdx(u,v){
+  for(let i=0;i<edgesData.length;i++){
+    const [a,b]=edgesData[i];
+    if(directed ? (a===u&&b===v) : ((a===u&&b===v)||(a===v&&b===u))) return i;
+  }
+  return -1;
+}
+function clearStyles(){
+  svg.querySelectorAll('.node').forEach(n=>n.classList.remove('start','visited','frontier','done','current'));
+  svg.querySelectorAll('.edge').forEach(e=>e.classList.remove('considered','tree','path','rejected'));
+  svg.querySelectorAll('text.dist').forEach(t=>t.textContent='');
+}
+function logStep(text){
+  const p = document.createElement('div'); p.className='step'; p.textContent='• '+text;
+  log.appendChild(p);
+  log.scrollTop = log.scrollHeight;
+}
+function clearLog(){ log.innerHTML=''; }
+
+// =================== TABELLE ===================
+let prevSnapshot = {};
+function showIterTable(){
+  tableCard.style.display='';
+  tableTitle.textContent = `Iterazioni — d / π da ${source}`;
+  let html = '<div class="iter-wrap"><table class="iter-table"><thead><tr><th>iter</th>';
+  nodesData.forEach(n=>{
+    html += `<th class="${n.id===source?'src':''}">${n.id}</th>`;
+  });
+  html += '</tr></thead><tbody id="iter-body"></tbody></table></div>';
+  tableContainer.innerHTML = html;
+  prevSnapshot = {};
+}
+function addIterRow(label, snapshot){
+  const body = document.getElementById('iter-body');
+  if(!body) return;
+  // mark previous current row as not current
+  body.querySelectorAll('tr.current').forEach(r=>r.classList.remove('current'));
+  const tr = document.createElement('tr');
+  tr.className='current';
+  let html = `<th>${label}</th>`;
+  nodesData.forEach(n=>{
+    const cur = snapshot[n.id]||{d:Infinity,prev:null};
+    const prv = prevSnapshot[n.id];
+    const changed = !prv || prv.d!==cur.d || prv.prev!==cur.prev;
+    if(cur.d===Infinity){
+      html += `<td class="inf${changed?' changed':''}">∞</td>`;
+    } else {
+      html += `<td class="${changed?'changed':''}">${cur.d}<span class="pi">/${cur.prev||'—'}</span></td>`;
+    }
+  });
+  tr.innerHTML = html;
+  body.appendChild(tr);
+  // deep copy
+  prevSnapshot = {};
+  for(const k in snapshot) prevSnapshot[k] = {d:snapshot[k].d, prev:snapshot[k].prev};
+  // scroll
+  tableContainer.scrollTop = tableContainer.scrollHeight;
+}
+
+function showMstTable(){
+  tableCard.style.display='';
+  tableTitle.textContent = 'Archi esaminati';
+  tableContainer.innerHTML = '<table class="mst-table"><thead><tr><th>#</th><th>Arco</th><th>Peso</th><th>Stato</th></tr></thead><tbody id="mst-body"></tbody></table><div class="mst-total" id="mst-total"></div>';
+}
+function addMstRow(idx, a, b, w, accepted){
+  const body = document.getElementById('mst-body');
+  const tr = document.createElement('tr');
+  tr.className = accepted?'accepted':'rejected';
+  tr.innerHTML = `<td>${idx}</td><td>${a}–${b}</td><td>${w}</td><td>${accepted?'✓ MST':'✗ ciclo'}</td>`;
+  body.appendChild(tr);
+}
+function updateMstTotal(total){
+  const t = document.getElementById('mst-total');
+  if(t) t.textContent = `Peso totale MST: ${total}`;
+}
+
+function hideTable(){ tableCard.style.display='none'; }
+
+// =================== ALGORITMI ===================
+function neighbors(u){
+  const out=[];
+  edgesData.forEach((e,i)=>{
+    if(directed){ if(e[0]===u) out.push({v:e[1],w:e[2],i}); }
+    else { if(e[0]===u) out.push({v:e[1],w:e[2],i}); else if(e[1]===u) out.push({v:e[0],w:e[2],i}); }
+  });
+  return out;
+}
+
+function bfsSteps(s){
+  const steps=[]; const visited=new Set([s]); const q=[s];
+  steps.push({type:'note',text:`Inizio BFS da ${s}. Coda: [${s}]`});
+  steps.push({type:'node',id:s,cls:'start frontier'});
+  while(q.length){
+    const u = q.shift();
+    steps.push({type:'node',id:u,cls:(u===s?'start ':'')+'current visited'});
+    steps.push({type:'note',text:`Estraggo ${u} dalla coda → esamino i vicini.`});
+    for(const {v,i} of neighbors(u)){
+      steps.push({type:'edge',i,cls:'considered'});
+      if(!visited.has(v)){
+        visited.add(v); q.push(v);
+        steps.push({type:'edge',i,cls:'tree'});
+        steps.push({type:'node',id:v,cls:'frontier'});
+        steps.push({type:'note',text:`Scoperto ${v} via ${u}. Coda: [${q.join(',')}]`});
+      } else {
+        steps.push({type:'edge',i,cls:''});
+        steps.push({type:'note',text:`${v} già visitato, ignoro.`});
+      }
+    }
+    steps.push({type:'node',id:u,cls:(u===s?'start ':'')+'done'});
+  }
+  steps.push({type:'note',text:'BFS terminata.'});
+  return steps;
+}
+
+function dfsSteps(s){
+  const steps=[]; const visited=new Set();
+  steps.push({type:'note',text:`Inizio DFS da ${s} (ricorsiva).`});
+  function rec(u,parent){
+    visited.add(u);
+    steps.push({type:'node',id:u,cls:(u===s?'start ':'')+'current visited'});
+    steps.push({type:'note',text:`Entro in ${u}`});
+    for(const {v,i} of neighbors(u)){
+      if(v===parent && !directed) continue;
+      steps.push({type:'edge',i,cls:'considered'});
+      if(!visited.has(v)){
+        steps.push({type:'edge',i,cls:'tree'});
+        rec(v,u);
+        steps.push({type:'node',id:u,cls:(u===s?'start ':'')+'current visited'});
+        steps.push({type:'note',text:`Torno indietro a ${u}`});
+      } else {
+        steps.push({type:'edge',i,cls:''});
+        steps.push({type:'note',text:`${v} già visitato (back-edge).`});
+      }
+    }
+    steps.push({type:'node',id:u,cls:(u===s?'start ':'')+'done'});
+  }
+  rec(s,null);
+  steps.push({type:'note',text:'DFS terminata.'});
+  return steps;
+}
+
+function snapshotOf(dist, prev){
+  const snap={};
+  nodesData.forEach(n=>{snap[n.id]={d:dist[n.id],prev:prev[n.id]||null}});
+  return snap;
+}
+function dijkstraSteps(s){
+  const steps=[];
+  const dist={}; const done=new Set(); const prev={};
+  nodesData.forEach(n=>{dist[n.id]=Infinity});
+  dist[s]=0;
+  steps.push({type:'table',action:'iter'});
+  steps.push({type:'iter',label:'init',snap:snapshotOf(dist,prev)});
+  steps.push({type:'dist',id:s,v:0});
+  steps.push({type:'node',id:s,cls:'start frontier'});
+  steps.push({type:'note',text:`Dijkstra da ${s}. d[${s}]=0, tutti gli altri = ∞.`});
+  while(done.size<nodesData.length){
+    let u=null,best=Infinity;
+    for(const n of nodesData) if(!done.has(n.id) && dist[n.id]<best){best=dist[n.id];u=n.id;}
+    if(u===null) break;
+    done.add(u);
+    steps.push({type:'node',id:u,cls:(u===s?'start ':'')+'current done'});
+    steps.push({type:'note',text:`Estraggo il nodo con d minima: ${u} (d=${dist[u]}).`});
+    for(const {v,w,i} of neighbors(u)){
+      if(done.has(v)) continue;
+      steps.push({type:'edge',i,cls:'considered'});
+      const nd = dist[u]+w;
+      if(nd<dist[v]){
+        dist[v]=nd; prev[v]=u;
+        steps.push({type:'dist',id:v,v:nd});
+        steps.push({type:'node',id:v,cls:'frontier'});
+        steps.push({type:'note',text:`Rilasso ${u}→${v}: nuova d[${v}]=${nd} via ${u}.`});
+      } else {
+        steps.push({type:'note',text:`${u}→${v}: ${dist[u]}+${w} ≥ ${dist[v]===Infinity?'∞':dist[v]}, non aggiorno.`});
+      }
+      steps.push({type:'edge',i,cls:''});
+    }
+    // snapshot dopo l'iterazione (estrazione + rilassamento)
+    steps.push({type:'iter',label:`estr ${u}`,snap:snapshotOf(dist,prev)});
+  }
+  for(const v in prev){
+    const i = findEdgeIdx(prev[v],v);
+    if(i>=0) steps.push({type:'edge',i,cls:'path'});
+  }
+  steps.push({type:'note',text:'Albero dei cammini minimi evidenziato in arancio.'});
+  return steps;
+}
+
+function bellmanFordSteps(s){
+  const steps=[];
+  const dist={}; const prev={};
+  nodesData.forEach(n=>{dist[n.id]=Infinity});
+  dist[s]=0;
+  steps.push({type:'table',action:'iter'});
+  steps.push({type:'iter',label:'init',snap:snapshotOf(dist,prev)});
+  steps.push({type:'dist',id:s,v:0});
+  steps.push({type:'node',id:s,cls:'start'});
+  steps.push({type:'note',text:`Bellman-Ford da ${s}. ${nodesData.length-1} iterazioni su tutti gli archi.`});
+  for(let it=1; it<nodesData.length; it++){
+    steps.push({type:'note',text:`— Iterazione ${it} —`});
+    let changed=false;
+    for(let i=0;i<edgesData.length;i++){
+      const [u,v,w]=edgesData[i];
+      steps.push({type:'edge',i,cls:'considered'});
+      if(dist[u]!==Infinity && dist[u]+w < dist[v]){
+        dist[v]=dist[u]+w; prev[v]=u; changed=true;
+        steps.push({type:'dist',id:v,v:dist[v]});
+        steps.push({type:'note',text:`Rilasso ${u}→${v} (peso ${w}): d[${v}]=${dist[v]}.`});
+      }
+      steps.push({type:'edge',i,cls:''});
+    }
+    steps.push({type:'iter',label:`iter ${it}`,snap:snapshotOf(dist,prev)});
+    if(!changed){steps.push({type:'note',text:'Nessun cambiamento: stop anticipato.'});break;}
+  }
+  let neg=false;
+  for(let i=0;i<edgesData.length;i++){
+    const [u,v,w]=edgesData[i];
+    if(dist[u]!==Infinity && dist[u]+w<dist[v]){neg=true;break;}
+  }
+  steps.push({type:'note',text: neg?'⚠ Ciclo negativo rilevato!':'Nessun ciclo negativo. Distanze definitive.'});
+  for(const v in prev){
+    const i = findEdgeIdx(prev[v],v);
+    if(i>=0) steps.push({type:'edge',i,cls:'path'});
+  }
+  return steps;
+}
+
+function primSteps(s){
+  const steps=[];
+  steps.push({type:'table',action:'mst'});
+  const inTree=new Set([s]);
+  steps.push({type:'node',id:s,cls:'start done'});
+  steps.push({type:'note',text:`Prim da ${s}.`});
+  let total=0, idx=0;
+  while(inTree.size<nodesData.length){
+    let best=null;
+    edgesData.forEach((e,i)=>{
+      const [a,b,w]=e;
+      const aIn=inTree.has(a), bIn=inTree.has(b);
+      if(aIn^bIn){ if(!best||w<best.w) best={i,u:aIn?a:b,v:aIn?b:a,w}; }
+    });
+    if(!best) break;
+    edgesData.forEach((e,i)=>{
+      const [a,b]=e; const aIn=inTree.has(a), bIn=inTree.has(b);
+      if(aIn^bIn) steps.push({type:'edge',i,cls:'considered'});
+    });
+    steps.push({type:'note',text:`Arco minimo uscente: ${best.u}-${best.v} (peso ${best.w}).`});
+    edgesData.forEach((e,i)=>{
+      const [a,b]=e; const aIn=inTree.has(a), bIn=inTree.has(b);
+      if(aIn^bIn && i!==best.i) steps.push({type:'edge',i,cls:''});
+    });
+    steps.push({type:'edge',i:best.i,cls:'tree'});
+    steps.push({type:'node',id:best.v,cls:'done'});
+    total+=best.w; idx++;
+    steps.push({type:'mstRow',idx,a:best.u,b:best.v,w:best.w,accepted:true});
+    steps.push({type:'mstTotal',v:total});
+    inTree.add(best.v);
+  }
+  steps.push({type:'note',text:`MST completato (peso totale ${total}).`});
+  return steps;
+}
+
+function kruskalSteps(){
+  const steps=[];
+  steps.push({type:'table',action:'mst'});
+  const parent={}; nodesData.forEach(n=>parent[n.id]=n.id);
+  function find(x){while(parent[x]!==x){parent[x]=parent[parent[x]];x=parent[x]}return x}
+  function union(a,b){const ra=find(a),rb=find(b);if(ra===rb)return false;parent[ra]=rb;return true}
+  const sorted = edgesData.map((e,i)=>({i,a:e[0],b:e[1],w:e[2]})).sort((x,y)=>x.w-y.w);
+  steps.push({type:'note',text:`Kruskal: archi ordinati per peso.`});
+  let total=0, idx=0;
+  for(const s of sorted){
+    steps.push({type:'edge',i:s.i,cls:'considered'});
+    idx++;
+    if(union(s.a,s.b)){
+      steps.push({type:'edge',i:s.i,cls:'tree'});
+      steps.push({type:'node',id:s.a,cls:'done'});
+      steps.push({type:'node',id:s.b,cls:'done'});
+      total += s.w;
+      steps.push({type:'mstRow',idx,a:s.a,b:s.b,w:s.w,accepted:true});
+      steps.push({type:'mstTotal',v:total});
+      steps.push({type:'note',text:`Aggiunto ${s.a}-${s.b} (${s.w}).`});
+    } else {
+      steps.push({type:'edge',i:s.i,cls:'rejected'});
+      steps.push({type:'mstRow',idx,a:s.a,b:s.b,w:s.w,accepted:false});
+      steps.push({type:'note',text:`Scartato ${s.a}-${s.b} (${s.w}): ciclo.`});
+    }
+  }
+  steps.push({type:'note',text:`MST completato (peso totale ${total}).`});
+  return steps;
+}
+
+// =================== ESECUZIONE ===================
+function applyStep(s){
+  if(s.type==='node') setNodeClass(s.id, s.cls);
+  else if(s.type==='edge') setEdgeClass(s.i, s.cls);
+  else if(s.type==='dist') setNodeDist(s.id, s.v);
+  else if(s.type==='note') logStep(s.text);
+  else if(s.type==='table'){
+    if(s.action==='iter') showIterTable();
+    else if(s.action==='mst') showMstTable();
+  }
+  else if(s.type==='iter') addIterRow(s.label, s.snap);
+  else if(s.type==='mstRow') addMstRow(s.idx, s.a, s.b, s.w, s.accepted);
+  else if(s.type==='mstTotal') updateMstTotal(s.v);
+}
+function play(){
+  if(timer) return;
+  timer = setInterval(()=>{
+    if(stepIdx>=queueSteps.length){clearInterval(timer);timer=null;return}
+    applyStep(queueSteps[stepIdx++]);
+  }, speed);
+}
+function stepOnce(){
+  if(timer){clearInterval(timer);timer=null}
+  if(stepIdx<queueSteps.length) applyStep(queueSteps[stepIdx++]);
+}
+function reset(){
+  if(timer){clearInterval(timer);timer=null}
+  run();
+}
+
+document.getElementById('play').onclick=play;
+document.getElementById('step').onclick=stepOnce;
+document.getElementById('reset').onclick=reset;
+
+// =================== TESTI ===================
+const TEXTS = {
+  intro: `<h3>Cos'è un grafo</h3>
+    <p>Un <b>grafo</b> G=(V,E) è un insieme di <b>nodi</b> V connessi da <b>archi</b> E. Gli archi possono essere <b>orientati</b> (frecce) o <b>non orientati</b>, con o senza <b>peso</b>.</p>
+    <p>Clicca un nodo (o un bottone della sezione Sorgente) per cambiare il punto di partenza.</p>
+    <p>Concetti: <code>grado</code>, <code>cammino</code>, <code>ciclo</code>, <code>connessione</code>.</p>`,
+  spanning: `<h3>Spanning tree & MST</h3>
+    <p>Uno <b>spanning tree</b> di un grafo connesso copre <b>tutti</b> i nodi con esattamente <b>|V|-1 archi</b> e nessun ciclo.</p>
+    <p>L'<b>MST</b> (Minimum Spanning Tree) è quello di peso totale <b>minimo</b>. Si trova con <b>Prim</b> o <b>Kruskal</b>.</p>
+    <p>Applicazioni: cablaggi, clustering, progettazione di reti.</p>`,
+  overview: `<h3>Riepilogo: cosa fa ogni algoritmo</h3>
+    <p><b>🔵 BFS — Breadth-First Search</b><br>
+    <i>Cosa fa:</i> visita tutti i nodi raggiungibili "a onde", livello per livello, partendo da una sorgente.<br>
+    <i>A cosa serve:</i> trovare il cammino con <b>meno archi</b> in grafi <b>non pesati</b>, controllare connessione, calcolare distanze in archi.<br>
+    <i>Struttura:</i> coda FIFO. <i>Costo:</i> O(V+E).</p>
+
+    <p><b>🟣 DFS — Depth-First Search</b><br>
+    <i>Cosa fa:</i> esplora un ramo fino in fondo, poi torna indietro (backtracking) e prova il prossimo.<br>
+    <i>A cosa serve:</i> rilevare <b>cicli</b>, <b>ordinamento topologico</b>, componenti (fortemente) connesse, ponti e punti di articolazione, labirinti.<br>
+    <i>Struttura:</i> ricorsione / stack LIFO. <i>Costo:</i> O(V+E).</p>
+
+    <p><b>🟢 Dijkstra</b><br>
+    <i>Cosa fa:</i> calcola il <b>cammino di peso minimo</b> da una sorgente a tutti gli altri nodi.<br>
+    <i>Vincolo:</i> pesi <b>non negativi</b>. Strategia <b>greedy</b>: estrae il nodo più vicino e rilassa gli archi.<br>
+    <i>A cosa serve:</i> navigatori, routing di rete, qualsiasi "costo minimo" con costi ≥ 0.<br>
+    <i>Costo:</i> O((V+E) log V) con heap.</p>
+
+    <p><b>🟠 Bellman-Ford</b><br>
+    <i>Cosa fa:</i> come Dijkstra (cammini minimi single-source), ma <b>ammette pesi negativi</b>.<br>
+    <i>Plus:</i> sa <b>rilevare cicli negativi</b> raggiungibili dalla sorgente.<br>
+    <i>A cosa serve:</i> grafi con "sconti"/guadagni (es. arbitraggio valute), reti con costi negativi.<br>
+    <i>Costo:</i> O(V·E) — più lento di Dijkstra ma più generale.</p>
+
+    <p><b>🌳 Prim — MST</b><br>
+    <i>Cosa fa:</i> costruisce l'<b>albero ricoprente di peso minimo</b> facendolo <b>crescere da un nodo</b>: a ogni passo aggiunge l'arco più leggero che esce dall'albero.<br>
+    <i>A cosa serve:</i> collegare tutti i nodi spendendo il meno possibile (cablaggi, infrastrutture).<br>
+    <i>Costo:</i> O((V+E) log V). Preferito su grafi <b>densi</b>.</p>
+
+    <p><b>🌲 Kruskal — MST</b><br>
+    <i>Cosa fa:</i> stesso obiettivo di Prim, ma lavora <b>sugli archi</b>: li ordina per peso e li aggiunge uno per uno se <b>non creano cicli</b> (Union-Find).<br>
+    <i>Costo:</i> O(E log E). Preferito su grafi <b>sparsi</b>.</p>
+
+    <p style="border-top:1px solid #222848;padding-top:8px;margin-top:10px">
+    <b>Cammini minimi vs MST:</b> sembrano simili, sono diversi.<br>
+    • <i>Cammini minimi</i> (Dijkstra, BF) → minimizzano il costo <b>da una sorgente a ogni nodo</b>.<br>
+    • <i>MST</i> (Prim, Kruskal) → minimizzano il costo <b>totale</b> per collegare tutti i nodi (può avere percorsi più lunghi tra coppie specifiche).</p>`,
+  paths: `<h3>Cammini minimi</h3>
+    <p>Un <b>cammino</b> è una sequenza di archi; la sua <b>lunghezza</b> è la somma dei pesi.</p>
+    <p>Algoritmi single-source:</p>
+    <p>• <b>BFS</b> — non pesati, O(V+E)<br>
+       • <b>Dijkstra</b> — pesi ≥ 0, O((V+E) log V)<br>
+       • <b>Bellman-Ford</b> — ammette pesi negativi, O(V·E)</p>`,
+  bfs: `<h3>BFS — Breadth-First Search</h3>
+    <p><b>Idea.</b> Visita il grafo "a onde", livello per livello: prima la sorgente, poi tutti i suoi vicini diretti, poi i vicini dei vicini, e così via.</p>
+    <p><b>Come funziona, passo per passo:</b></p>
+    <p>1) Marca la sorgente <code>s</code> come visitata e mettila in una <b>coda FIFO</b>.<br>
+       2) Estrai il primo nodo <code>u</code> dalla coda.<br>
+       3) Per ogni vicino <code>v</code> di <code>u</code>: se non è ancora visitato, marcalo, registra <code>π[v]=u</code> e mettilo in fondo alla coda. L'arco <code>u→v</code> entra nell'<b>albero BFS</b>.<br>
+       4) Ripeti finché la coda non è vuota.</p>
+    <p><b>Perché funziona.</b> La coda FIFO garantisce di esaurire un livello prima di passare al successivo: quando scopri <code>v</code> per la prima volta, ci sei arrivato col minimo numero di archi possibile.</p>
+    <p>⚠️ Ignora i pesi: il "minimo" è in <b>numero di archi</b>, non in costo. Complessità <code>O(V+E)</code>.</p>
+    <p><b>Pseudocodice:</b><br>
+    <code>BFS(s): visit[s]=true; Q=[s]; while Q: u=Q.deq(); for v∈adj(u): if !visit[v]: visit[v]=true; π[v]=u; Q.enq(v)</code></p>`,
+
+  dfs: `<h3>DFS — Depth-First Search</h3>
+    <p><b>Idea.</b> Esplora il grafo "in profondità": segue un ramo finché può, e quando si blocca <b>torna indietro</b> (backtracking) per provare un'altra strada.</p>
+    <p><b>Come funziona, passo per passo:</b></p>
+    <p>1) Marca <code>u</code> come visitato (entri in <code>u</code>).<br>
+       2) Per ogni vicino <code>v</code> di <code>u</code>: se non è visitato, chiama ricorsivamente DFS su <code>v</code>.<br>
+       3) Quando hai esaurito i vicini di <code>u</code>, esci da <code>u</code> (backtrack al chiamante).</p>
+    <p>Equivale a una BFS ma con <b>stack LIFO</b> al posto della coda. La ricorsione usa lo stack delle chiamate del programma.</p>
+    <p><b>Tipi di archi durante DFS:</b> <i>tree edges</i> (esplorano nuovi nodi), <i>back edges</i> (puntano a un antenato → indicano un <b>ciclo</b>), forward/cross edges (in grafi orientati).</p>
+    <p><b>Applicazioni:</b> rilevare cicli, <b>ordinamento topologico</b> (DAG), componenti (fortemente) connesse (Tarjan/Kosaraju), <b>ponti</b> e punti di articolazione, risoluzione di labirinti.</p>
+    <p>⚠️ Ignora i pesi. Complessità <code>O(V+E)</code>.</p>
+    <p><b>Pseudocodice:</b><br>
+    <code>DFS(u): visit[u]=true; for v∈adj(u): if !visit[v]: π[v]=u; DFS(v)</code></p>`,
+
+  dijkstra: `<h3>Dijkstra</h3>
+    <p><b>Idea.</b> Cammini di costo minimo dalla sorgente a <b>tutti</b> gli altri nodi, su grafi con pesi <b>≥ 0</b>. Strategia <b>greedy</b>: a ogni passo finalizzi il nodo che, con le stime correnti, è il più vicino alla sorgente.</p>
+    <p><b>Come funziona, passo per passo:</b></p>
+    <p>1) <b>Inizializzazione:</b> <code>d[s]=0</code>, <code>d[v]=∞</code> per tutti gli altri, <code>π[v]=null</code>. Tutti i nodi sono "non finalizzati".<br>
+       2) <b>Estrazione:</b> tra i nodi non finalizzati, scegli quello con <code>d</code> minimo, chiamalo <code>u</code>: lo finalizzi (la sua <code>d[u]</code> non cambierà più).<br>
+       3) <b>Rilassamento:</b> per ogni arco uscente <code>u→v</code> di peso <code>w</code>, se <code>d[u]+w &lt; d[v]</code> aggiorna<br>
+       &nbsp;&nbsp;&nbsp;<code>d[v] = d[u]+w; π[v] = u</code>.<br>
+       4) Ripeti dal punto 2 finché tutti i nodi sono finalizzati.</p>
+    <p><b>Perché funziona (e perché serve w ≥ 0).</b> Quando estrai <code>u</code> con <code>d[u]</code> minimo, qualsiasi cammino alternativo passerebbe per un nodo non ancora finalizzato (con stima ≥ <code>d[u]</code>) e aggiungerebbe pesi non negativi → non può essere più corto. Con pesi negativi questa garanzia salta: serve Bellman-Ford.</p>
+    <p>Il grafo dei <code>π[v]</code> forma l'<b>albero dei cammini minimi</b>, evidenziato in arancio alla fine.</p>
+    <p><b>Complessità:</b> <code>O((V+E) log V)</code> con heap binario; <code>O(E + V log V)</code> con Fibonacci heap.</p>`,
+
+  bellman: `<h3>Bellman-Ford</h3>
+    <p><b>Idea.</b> Cammini minimi single-source come Dijkstra, ma <b>più generale</b>: ammette pesi <b>negativi</b> e sa <b>rilevare cicli negativi</b>. Niente coda di priorità: rilassa ostinatamente <b>tutti</b> gli archi, più volte di seguito.</p>
+    <p><b>Come funziona, passo per passo:</b></p>
+    <p>1) <b>Inizializzazione:</b> <code>d[s]=0</code>, <code>d[v]=∞</code>, <code>π[v]=null</code>.<br>
+       2) <b>Iterazioni</b> — ripeti <b>|V|-1 volte</b>: per <b>ogni</b> arco <code>(u,v,w)</code>, prova il rilassamento<br>
+       &nbsp;&nbsp;&nbsp;<code>if d[u]+w &lt; d[v]: d[v]=d[u]+w; π[v]=u</code>.<br>
+       3) <b>Controllo cicli negativi:</b> fai una passata in più. Se ancora qualche arco si rilassa, esiste un ciclo negativo raggiungibile da <code>s</code>: segnala l'errore.</p>
+    <p><b>Perché bastano |V|-1 iterazioni.</b> Un cammino minimo semplice ha al massimo <code>|V|-1</code> archi. Per induzione si dimostra che, dopo <code>k</code> passate, <code>d[v]</code> è corretto per tutti i nodi raggiungibili da <code>s</code> con cammini di al più <code>k</code> archi. Quindi <code>|V|-1</code> passate bastano se non ci sono cicli negativi. Se al passo successivo qualcosa migliora ancora, vuol dire che esiste un cammino di lunghezza ≥ |V| con costo minore → è il sintomo di un ciclo negativo.</p>
+    <p><b>Cicli negativi.</b> Se esistono, non c'è cammino minimo: girando nel ciclo riduci il costo all'infinito. Bellman-Ford li <i>rileva</i> ma non li "risolve".</p>
+    <p>Nel grafo di esempio (CLRS) gli archi <span style="color:var(--bad)">-4, -3, -2</span> sono negativi ma <b>non</b> formano un ciclo negativo: l'algoritmo termina con distanze finite.</p>
+    <p><b>Complessità:</b> <code>O(V·E)</code>. Più lento di Dijkstra ma molto più potente.</p>`,
+
+  prim: `<h3>Prim — Minimum Spanning Tree</h3>
+    <p><b>Idea.</b> Costruisce l'MST facendolo <b>crescere da un singolo nodo</b>, aggiungendo a ogni passo l'arco più leggero che <b>esce</b> dall'albero corrente verso un nodo non ancora incluso.</p>
+    <p><b>Come funziona, passo per passo:</b></p>
+    <p>1) Scegli un nodo iniziale e mettilo nell'albero <b>T</b>.<br>
+       2) Considera tutti gli archi che hanno <b>esattamente un estremo</b> in <b>T</b> (gli archi "del taglio").<br>
+       3) Tra questi, prendi quello di peso <b>minimo</b> e aggiungilo a <b>T</b> insieme al suo nuovo nodo.<br>
+       4) Ripeti finché <b>T</b> contiene tutti i nodi (<code>|V|-1</code> archi totali).</p>
+    <p><b>Perché funziona — proprietà del taglio.</b> Per ogni taglio (partizione dei nodi in due parti) che separa l'albero corrente dal resto, l'arco di peso minimo che attraversa il taglio appartiene <b>sicuramente</b> a un MST. Prim sfrutta questa proprietà a ogni passo, scegliendo sempre un arco "sicuro".</p>
+    <p>Strutturalmente è quasi identico a Dijkstra: stessa coda di priorità, ma la chiave di un nodo <code>v</code> non in <b>T</b> è il <i>peso dell'arco</i> che lo collega a <b>T</b> (non la distanza dalla sorgente).</p>
+    <p><b>Complessità:</b> <code>O((V+E) log V)</code> con heap binario. Vince su grafi <b>densi</b>.</p>`,
+
+  kruskal: `<h3>Kruskal — Minimum Spanning Tree</h3>
+    <p><b>Idea.</b> Stesso obiettivo di Prim ma punto di vista opposto: lavora <b>sugli archi</b>. Li ordina per peso crescente e li aggiunge uno per uno saltando quelli che chiuderebbero un ciclo.</p>
+    <p><b>Come funziona, passo per passo:</b></p>
+    <p>1) <b>Ordina</b> tutti gli archi per peso crescente.<br>
+       2) Inizia con una "foresta": ogni nodo è un albero a sé (componente isolata).<br>
+       3) Scorri gli archi in ordine. Per l'arco <code>(u,v)</code>:<br>
+       &nbsp;&nbsp;&nbsp;• se <code>u</code> e <code>v</code> sono in <b>componenti diverse</b>, aggiungilo all'MST e <b>fondi</b> le due componenti;<br>
+       &nbsp;&nbsp;&nbsp;• se sono già nella stessa componente, <b>scartalo</b> (creerebbe un ciclo).<br>
+       4) Termina quando l'MST ha <code>|V|-1</code> archi (un'unica componente).</p>
+    <p><b>Union-Find (DSU).</b> La struttura dati che rende efficiente il test "stessa componente?": <code>find(x)</code> restituisce il rappresentante della componente di <code>x</code>; <code>union(x,y)</code> le fonde. Con <i>path compression</i> + <i>union by rank</i> ogni operazione costa praticamente <code>O(α(n))</code>, quasi costante.</p>
+    <p><b>Perché funziona — proprietà del ciclo.</b> In ogni ciclo del grafo, l'arco di peso massimo <b>non</b> appartiene a nessun MST. Kruskal, prendendo gli archi in ordine crescente, scarta esattamente gli archi che chiudono cicli — cioè quelli "di troppo".</p>
+    <p><b>Complessità:</b> <code>O(E log E)</code>, dominata dall'ordinamento. Vince su grafi <b>sparsi</b>.</p>`,
+};
+
+// =================== ORCHESTRAZIONE ===================
+function renderSrcButtons(){
+  const c = document.getElementById('src-buttons'); c.innerHTML='';
+  nodesData.forEach(n=>{
+    const b=document.createElement('button'); b.className='ctrl'; b.textContent=n.id;
+    if(n.id===source) b.classList.add('primary');
+    b.onclick=()=>{source=n.id; run()};
+    c.appendChild(b);
+  });
+}
+
+function setupDataset(algo){
+  if(algo==='bellman'){
+    edgesData = DIGRAPH_EDGES.map(e=>e.slice());
+    nodesData = BF_NODES.map(n=>({...n}));
+    directed = true;
+    if(!nodesData.find(n=>n.id===source)) source='s';
+  } else {
+    edgesData = EDGES.map(e=>e.slice());
+    nodesData = NODES.slice();
+    directed = false;
+  }
+}
+
+function run(){
+  if(timer){clearInterval(timer);timer=null}
+  stepIdx=0; queueSteps=[];
+  setupDataset(currentAlgo);
+  renderGraph();
+  renderSrcButtons();
+  clearStyles();
+  clearLog();
+  descCard.innerHTML = TEXTS[currentAlgo]||'';
+  hideTable();
+
+  if(['intro','spanning','paths','overview'].includes(currentAlgo)) return;
+  if(currentAlgo==='bfs') queueSteps = bfsSteps(source);
+  else if(currentAlgo==='dfs') queueSteps = dfsSteps(source);
+  else if(currentAlgo==='dijkstra') queueSteps = dijkstraSteps(source);
+  else if(currentAlgo==='bellman') queueSteps = bellmanFordSteps(source);
+  else if(currentAlgo==='prim') queueSteps = primSteps(source);
+  else if(currentAlgo==='kruskal') queueSteps = kruskalSteps();
+  play();
+}
+
+document.querySelectorAll('.algo').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.algo').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentAlgo = btn.dataset.algo;
+    run();
+  };
+});
+
+document.querySelector('.algo[data-algo="intro"]').classList.add('active');
+run();
+</script>
+</body>
+</html>
