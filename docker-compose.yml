@@ -1,0 +1,15 @@
+services:
+  php:
+    image: php:8.2-fpm
+    volumes:
+      - .:/var/www/html/z-tutorial
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html/z-tutorial
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
