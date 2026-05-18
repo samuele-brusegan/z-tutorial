@@ -736,6 +736,7 @@ function setupDataset(algo){
     edgesData = EDGES.map(e=>e.slice());
     nodesData = NODES.slice();
     directed = false;
+    if(!nodesData.find(n=>n.id===source)) source='A';
   }
 }
 
