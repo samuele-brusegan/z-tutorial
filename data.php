@@ -73,4 +73,14 @@ $tutorials = [
         'pages'   => '4 pagine',
         'file'    => 'packet-tracer.html',
     ],
+    [
+        'id'      => 7,
+        'title'   => 'Grafi e Algoritmi — Visualizzazione interattiva',
+        'category' => 'algo',
+        'level'   => 'medium',
+        'desc'    => 'BFS, DFS, Dijkstra, Bellman-Ford, Prim, Kruskal: animazioni, tabelle di traccia e spiegazioni passo-passo.',
+        'tags'    => ['BFS', 'DFS', 'Dijkstra', 'MST', 'cammini minimi'],
+        'pages'   => 'interattivo',
+        'file'    => 'grafi.html',
+    ],
 ];

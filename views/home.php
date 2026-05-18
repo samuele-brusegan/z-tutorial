@@ -3,8 +3,9 @@
 // VIEW: Home — Grid di tutti i tutorial
 // ============================================================
 $catNames = [
-    'js'  => 'JavaScript', 'html' => 'HTML',   'css'  => 'CSS',
-    'db'  => 'Database',   'git'  => 'Git',    'net'  => 'Networking',
+    'js'  => 'JavaScript',  'html' => 'HTML',       'css'  => 'CSS',
+    'db'  => 'Database',    'git'  => 'Git',        'net'  => 'Networking',
+    'networking' => 'Networking', 'algo' => 'Algoritmi',
 ];
 $levelNames = [
     'easy'   => 'facile',  'medium' => 'medio',  'hard' => 'difficile',
