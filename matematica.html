@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifica di Matematica — Flessi, Max/Min, Teoremi del Calcolo Differenziale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="matematica.css">
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+        options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+      };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="." class="nav-logo">f(x) = ?</a>
+            <a href="index.php" class="nav-logo" style="margin-left:-0.5rem;opacity:.4;font-size:.8rem;">&larr; Tutti</a>
+            <div class="nav-links">
+                <a class="nav-link active" data-page="1">Intro</a>
+                <a class="nav-link" data-page="2">Teoremi</a>
+                <a class="nav-link" data-page="3">Flessi</a>
+                <a class="nav-link" data-page="4">Max & Min</a>
+                <a class="nav-link" data-page="5">Problemi</a>
+                <a class="nav-link" data-page="6">Quiz</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- HERO -->
+        <header class="hero">
+            <div class="hero-badge">ITIS ZUCCANTE — 4IB</div>
+            <h1>Verifica di <span class="highlight">Matematica</span></h1>
+            <p class="hero-sub">
+                Teoremi, flessi e problemi di massimo e minimo — con grafici interattivi e animazioni.
+            </p>
+            <div class="hero-anim-wrap">
+                <svg class="hero-anim" id="hero-anim" viewBox="0 0 720 200" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+        </header>
+
+        <!-- ============ PAGE 1: INTRO ============ -->
+        <section class="section page" data-index="1">
+            <div class="section-number">1</div>
+            <h2>La mappa della verifica</h2>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-icon">f</div>
+                    <div class="concept-title">La funzione</div>
+                    <div class="concept-desc">Dominio, segno, asintoti, comportamento agli estremi.</div>
+                </div>
+                <div class="concept-card concept-green">
+                    <div class="concept-icon">f′</div>
+                    <div class="concept-title">Derivata prima</div>
+                    <div class="concept-desc">Pendenza, crescenza, <strong>max/min relativi</strong>.</div>
+                </div>
+                <div class="concept-card concept-amber">
+                    <div class="concept-icon">f″</div>
+                    <div class="concept-title">Derivata seconda</div>
+                    <div class="concept-desc">Concavità e <strong>punti di flesso</strong>.</div>
+                </div>
+            </div>
+
+            <h3>Le tre cose da saper fare</h3>
+            <ol class="steps">
+                <li>Applicare i <strong>teoremi</strong> (Rolle, Lagrange, Cauchy, De L'Hôpital) verificando le ipotesi.</li>
+                <li>Trovare <strong>flessi</strong>, <strong>massimi</strong> e <strong>minimi</strong> studiando il segno di $f'$ e $f''$.</li>
+                <li>Risolvere <strong>problemi di max/min</strong>: definire la variabile, scrivere $f$, derivare, controllare il bordo.</li>
+            </ol>
+
+            <div class="tip">
+                <strong>Suggerimento:</strong> prima di derivare, controlla sempre il dominio. Non sempre $f'(x_0)=0$ implica max o min — può essere un flesso a tangente orizzontale.
+            </div>
+
+            <h3>Le funzioni "amiche" della verifica</h3>
+            <div class="fn-cards">
+                <div class="fn-card" data-fn="x3-3x">
+                    <div class="fn-eq">$f(x) = x^3 - 3x$</div>
+                    <div class="fn-tag">flesso obliquo + max/min</div>
+                </div>
+                <div class="fn-card" data-fn="x4-4x2">
+                    <div class="fn-eq">$f(x) = x^4 - 4x^2$</div>
+                    <div class="fn-tag">1 max + 2 min</div>
+                </div>
+                <div class="fn-card" data-fn="x-1plusx2">
+                    <div class="fn-eq">$f(x) = \dfrac{x}{1+x^2}$</div>
+                    <div class="fn-tag">3 flessi + asintoto</div>
+                </div>
+            </div>
+
+            <!-- MINI QUIZ 1 -->
+            <div class="mini-quiz" data-quiz-id="q-intro">
+                <h3>Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">Cosa indica il segno di $f''(x)$?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-intro-1" value="a"> La pendenza della tangente</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-intro-1" value="b"> La concavità ($&gt;0$ in alto, $&lt;0$ in basso)</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-intro-1" value="c"> Se la funzione è crescente o decrescente</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 2: TEOREMI ============ -->
+        <section class="section page hidden" data-index="2">
+            <div class="section-number">2</div>
+            <h2>Teoremi del calcolo differenziale</h2>
+
+            <!-- ROLLE -->
+            <div class="theorem">
+                <div class="theorem-name">Teorema di Rolle</div>
+                <div class="theorem-statement">
+                    Se $f$ è <em>continua</em> su $[a,b]$, <em>derivabile</em> su $(a,b)$ e $f(a)=f(b)$,
+                    allora esiste $c \in (a,b)$ tale che $f'(c)=0$.
+                </div>
+            </div>
+
+            <div class="anim-wrap">
+                <div class="anim-caption">Anim — Rolle: la tangente scorre finché diventa orizzontale</div>
+                <svg class="anim-svg" id="anim-rolle" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet"></svg>
+                <div class="anim-controls">
+                    <button class="plot-btn" data-action="rolle-play">▶ Riavvia</button>
+                </div>
+            </div>
+
+            <!-- LAGRANGE -->
+            <div class="theorem">
+                <div class="theorem-name">Teorema di Lagrange (valor medio)</div>
+                <div class="theorem-statement">
+                    $f$ continua su $[a,b]$, derivabile su $(a,b)$ $\Rightarrow$ esiste $c \in (a,b)$ tale che
+                    $f'(c) = \dfrac{f(b)-f(a)}{b-a}$.
+                </div>
+            </div>
+
+            <div class="anim-wrap">
+                <div class="anim-caption">Anim — Lagrange: la tangente è <em>parallela</em> alla corda</div>
+                <svg class="anim-svg" id="anim-lagrange" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet"></svg>
+                <div class="anim-controls">
+                    <button class="plot-btn" data-action="lagrange-play">▶ Riavvia</button>
+                </div>
+            </div>
+
+            <!-- CAUCHY + DE L'HOPITAL -->
+            <div class="two-col">
+                <div class="theorem">
+                    <div class="theorem-name">Cauchy</div>
+                    <div class="theorem-statement">
+                        $\dfrac{f(b)-f(a)}{g(b)-g(a)} = \dfrac{f'(c)}{g'(c)}$ per un $c\in(a,b)$.
+                        Generalizza Lagrange a due funzioni; serve per dimostrare De L'Hôpital.
+                    </div>
+                </div>
+                <div class="theorem">
+                    <div class="theorem-name">De L'Hôpital</div>
+                    <div class="theorem-statement">
+                        Per forme $\frac{0}{0}$ o $\frac{\infty}{\infty}$:
+                        $\displaystyle\lim_{x\to x_0}\frac{f}{g}=\lim_{x\to x_0}\frac{f'}{g'}$.
+                        Es: $\lim\limits_{x\to 0}\dfrac{\sin x}{x}\stackrel{H}{=}\dfrac{\cos x}{1}\to 1$.
+                    </div>
+                </div>
+            </div>
+
+            <h3>Quale teorema in che caso?</h3>
+            <div class="sign-table">
+                <table>
+                    <thead><tr><th>Situazione</th><th>Teorema</th></tr></thead>
+                    <tbody>
+                        <tr><td>$f(a)=f(b)$, cerco $f'=0$</td><td class="label">Rolle</td></tr>
+                        <tr><td>Pendenza media = pendenza in un punto</td><td class="label">Lagrange</td></tr>
+                        <tr><td>Rapporto di variazioni</td><td class="label">Cauchy</td></tr>
+                        <tr><td>Limite $\frac{0}{0}$ o $\frac{\infty}{\infty}$</td><td class="label">De L'Hôpital</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- MINI QUIZ 2 -->
+            <div class="mini-quiz" data-quiz-id="q-teor">
+                <h3>Quiz veloce</h3>
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-text">Per Rolle servono:</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-teor-1" value="a"> Solo la continuità</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-teor-1" value="b"> Derivabilità su $[a,b]$ e $f(a)\neq f(b)$</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-teor-1" value="c"> Continuità su $[a,b]$, derivabilità su $(a,b)$, $f(a)=f(b)$</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 3: FLESSI ============ -->
+        <section class="section page hidden" data-index="3">
+            <div class="section-number">3</div>
+            <h2>Flessi e concavità</h2>
+
+            <div class="definition">
+                <div class="def-title">Flesso</div>
+                <p>Punto $x_0$ del dominio in cui $f$ <strong>cambia concavità</strong>.</p>
+            </div>
+
+            <div class="anim-wrap">
+                <div class="anim-caption">Anim — la curva cambia concavità: ecco un <strong>flesso</strong></div>
+                <svg class="anim-svg" id="anim-concav" viewBox="0 0 720 280" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+
+            <div class="two-col">
+                <div class="definition" style="border-left-color:var(--mt-purple);">
+                    <div class="def-title" style="color:var(--mt-purple);">Necessaria</div>
+                    <p>Se $x_0$ è flesso e $f$ ha $f''$, allora $f''(x_0)=0$.</p>
+                </div>
+                <div class="definition" style="border-left-color:var(--mt-amber);background:#2a1f0a;">
+                    <div class="def-title" style="color:var(--mt-amber);">Sufficiente</div>
+                    <p>$f''$ <em>cambia segno</em> in $x_0$ $\Rightarrow$ flesso.</p>
+                </div>
+            </div>
+
+            <h3>Tipi di flesso</h3>
+            <div class="flex-types">
+                <div class="flex-type">
+                    <svg viewBox="0 0 120 80" class="flex-mini"><path d="M 10 75 C 35 75 35 40 60 40 C 85 40 85 5 110 5" fill="none" stroke="#a78bfa" stroke-width="2.5"/><line x1="20" y1="40" x2="100" y2="40" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="60" cy="40" r="4" fill="#f472b6"/></svg>
+                    <div class="ft-name">Orizzontale</div>
+                    <div class="ft-desc">$f'(x_0)=0$ e $f''(x_0)=0$. Es: $x^3$ in $0$.</div>
+                </div>
+                <div class="flex-type">
+                    <svg viewBox="0 0 120 80" class="flex-mini"><path d="M 15 75 C 35 70 50 55 60 45 C 70 35 85 20 105 15" fill="none" stroke="#a78bfa" stroke-width="2.5"/><line x1="25" y1="80" x2="95" y2="10" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="60" cy="45" r="4" fill="#f472b6"/></svg>
+                    <div class="ft-name">Obliqua</div>
+                    <div class="ft-desc">$f'(x_0)\neq 0$, $f''$ cambia segno.</div>
+                </div>
+                <div class="flex-type">
+                    <svg viewBox="0 0 120 80" class="flex-mini"><path d="M 10 73 C 45 70 58 65 60 40 C 62 15 75 10 110 7" fill="none" stroke="#a78bfa" stroke-width="2.5"/><line x1="60" y1="5" x2="60" y2="75" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="60" cy="40" r="4" fill="#f472b6"/></svg>
+                    <div class="ft-name">Verticale</div>
+                    <div class="ft-desc">$|f'(x_0)|=+\infty$ con cambio concavità. Es: $\sqrt[3]{x}$.</div>
+                </div>
+            </div>
+
+            <h3>Esplora i flessi</h3>
+            <div class="plot-wrap" id="plot-flessi">
+                <div class="plot-controls">
+                    <button class="plot-btn active" data-fn="x3-3x">x³ − 3x</button>
+                    <button class="plot-btn" data-fn="x4-4x2">x⁴ − 4x²</button>
+                    <button class="plot-btn" data-fn="x-1plusx2">x / (1+x²)</button>
+                    <button class="plot-btn" data-fn="x3">x³</button>
+                </div>
+                <div class="plot-canvas-wrap">
+                    <canvas id="canvas-flessi" width="780" height="380"></canvas>
+                </div>
+                <div class="plot-legend">
+                    <span class="lg"><span class="sw" style="background:#a78bfa"></span>f(x)</span>
+                    <span class="lg"><span class="sw" style="background:#34d399"></span>f'(x)</span>
+                    <span class="lg"><span class="sw" style="background:#fbbf24"></span>f''(x)</span>
+                    <span class="lg"><span class="sw" style="background:#f472b6;border-radius:50%;width:10px;height:10px"></span>flesso</span>
+                </div>
+                <div class="plot-info" id="plot-info-flessi"></div>
+            </div>
+
+            <!-- MINI QUIZ 3 -->
+            <div class="mini-quiz" data-quiz-id="q-fle">
+                <h3>Quiz veloce</h3>
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-text">$f(x)=x^4$. $f''(0)=0$. Cosa puoi dire?</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-fle-1" value="a"> È sicuramente un flesso</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-fle-1" value="b"> Non è flesso: $f''$ non cambia segno (è un minimo)</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-fle-1" value="c"> È un massimo</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 4: MAX & MIN ============ -->
+        <section class="section page hidden" data-index="4">
+            <div class="section-number">4</div>
+            <h2>Massimi e minimi</h2>
+
+            <div class="anim-wrap">
+                <div class="anim-caption">Anim — la <strong>tangente</strong> diventa orizzontale in max e min</div>
+                <svg class="anim-svg" id="anim-maxmin" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+
+            <h3>Le due regole</h3>
+            <div class="two-col">
+                <div class="definition" style="border-left-color:#f472b6;">
+                    <div class="def-title" style="color:#f472b6;">Test della derivata prima</div>
+                    <p>$f'$ passa da $+$ a $-$ $\Rightarrow$ <strong>max</strong>.<br>
+                       $f'$ passa da $-$ a $+$ $\Rightarrow$ <strong>min</strong>.</p>
+                </div>
+                <div class="definition" style="border-left-color:var(--mt-purple);">
+                    <div class="def-title" style="color:var(--mt-purple);">Test della derivata seconda</div>
+                    <p>$f'(x_0)=0$ e $f''(x_0)&gt;0 \Rightarrow$ <strong>min</strong>.<br>
+                       $f'(x_0)=0$ e $f''(x_0)&lt;0 \Rightarrow$ <strong>max</strong>.</p>
+                </div>
+            </div>
+
+            <h3>Tabella dei segni — $f(x)=x^4-4x^2$</h3>
+            <div class="sign-table">
+                <table>
+                    <thead><tr><th></th><th>$x&lt;-\sqrt{2}$</th><th>$-\sqrt{2}$</th><th>$&lt;0$</th><th>$0$</th><th>$&gt;0$</th><th>$\sqrt{2}$</th><th>$&gt;\sqrt{2}$</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="label">$f'(x)$</td>
+                            <td class="neg">−</td><td class="zero">0</td>
+                            <td class="pos">+</td><td class="zero">0</td>
+                            <td class="neg">−</td><td class="zero">0</td>
+                            <td class="pos">+</td>
+                        </tr>
+                        <tr>
+                            <td class="label">$f(x)$</td>
+                            <td>↘</td><td><strong style="color:var(--mt-green)">min</strong></td>
+                            <td>↗</td><td><strong style="color:#f472b6">MAX</strong></td>
+                            <td>↘</td><td><strong style="color:var(--mt-green)">min</strong></td>
+                            <td>↗</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Visualizza i punti critici</h3>
+            <div class="plot-wrap" id="plot-maxmin">
+                <div class="plot-controls">
+                    <button class="plot-btn active" data-fn="x4-4x2">x⁴ − 4x²</button>
+                    <button class="plot-btn" data-fn="x3-3x">x³ − 3x</button>
+                    <button class="plot-btn" data-fn="x-1plusx2">x / (1+x²)</button>
+                </div>
+                <div class="plot-canvas-wrap">
+                    <canvas id="canvas-maxmin" width="780" height="380"></canvas>
+                </div>
+                <div class="plot-legend">
+                    <span class="lg"><span class="sw" style="background:#a78bfa"></span>f(x)</span>
+                    <span class="lg"><span class="sw" style="background:#34d399"></span>f'(x)</span>
+                    <span class="lg"><span class="sw" style="background:#f472b6;border-radius:50%;width:10px;height:10px"></span>max</span>
+                    <span class="lg"><span class="sw" style="background:#34d399;border-radius:50%;width:10px;height:10px"></span>min</span>
+                </div>
+                <div class="plot-info" id="plot-info-maxmin"></div>
+            </div>
+
+            <div class="tip">
+                <strong>Su $[a,b]$ chiuso</strong> (Weierstrass): gli estremi assoluti vanno cercati tra <em>punti critici</em>, <em>punti di non derivabilità</em> e gli <em>estremi $a$, $b$</em>.
+            </div>
+
+            <!-- MINI QUIZ 4 -->
+            <div class="mini-quiz" data-quiz-id="q-mm">
+                <h3>Quiz veloce</h3>
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-text">$f'(x_0)=0$ e $f''(x_0)&gt;0$. $x_0$ è:</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-mm-1" value="a"> Minimo relativo</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-mm-1" value="b"> Massimo relativo</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-mm-1" value="c"> Flesso orizzontale</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 5: PROBLEMI ============ -->
+        <section class="section page hidden" data-index="5">
+            <div class="section-number">5</div>
+            <h2>Problemi di massimo e minimo</h2>
+
+            <h3>Strategia</h3>
+            <ol class="steps compact">
+                <li>Disegna + scegli la variabile $x$.</li>
+                <li>Scrivi la <strong>funzione obiettivo</strong> in $x$.</li>
+                <li>Determina il <strong>dominio fisico</strong>.</li>
+                <li>$f'(x)=0$, studia il segno.</li>
+                <li>Controlla anche il <strong>bordo</strong>.</li>
+            </ol>
+
+            <!-- PROBLEMA 1 -->
+            <h3>Problema 1 — Rettangolo di area massima</h3>
+            <p>Perimetro $2p$ fissato. Quale rettangolo ha area massima?</p>
+
+            <div class="anim-wrap">
+                <div class="anim-caption">Anim — varia la base $x$, il perimetro resta fisso, l'area è massima nel quadrato</div>
+                <svg class="anim-svg" id="anim-rect" viewBox="0 0 720 280" preserveAspectRatio="xMidYMid meet"></svg>
+                <div class="anim-controls">
+                    <label class="anim-slider">$x$ <input type="range" id="rect-slider" min="5" max="95" value="20"></label>
+                </div>
+            </div>
+
+            <p>
+                $A(x)=x(p-x)$, $A'(x)=p-2x=0 \Rightarrow x=\dfrac{p}{2}$. Quadrato! $A_{\max}=\dfrac{p^2}{4}$.
+            </p>
+
+            <!-- PROBLEMA 2 -->
+            <h3>Problema 2 — Scatola di volume massimo</h3>
+            <p>Da un quadrato di lato $L$ ritagli quadrati di lato $x$ agli angoli e pieghi.</p>
+
+            <div class="anim-wrap">
+                <div class="anim-caption">Anim — il taglio $x$ si trasforma in scatola; il volume è massimo per $x=L/6$</div>
+                <svg class="anim-svg" id="anim-box" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet"></svg>
+                <div class="anim-controls">
+                    <label class="anim-slider">$x$ <input type="range" id="box-slider" min="2" max="48" value="16"></label>
+                </div>
+            </div>
+
+            <p>
+                $V(x)=x(L-2x)^2$, $V'(x)=(L-2x)(L-6x)=0 \Rightarrow x=\dfrac{L}{6}$.
+                $V_{\max}=\dfrac{2L^3}{27}$.
+            </p>
+
+            <!-- PROBLEMA 3 -->
+            <h3>Problema 3 — Distanza minima</h3>
+            <p>Punto della parabola $y=x^2$ più vicino a $P(0,2)$.</p>
+
+            <div class="anim-wrap">
+                <div class="anim-caption">Anim — sposta $Q$ sulla parabola, leggi la distanza</div>
+                <svg class="anim-svg" id="anim-dist" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet"></svg>
+                <div class="anim-controls">
+                    <label class="anim-slider">$x$ <input type="range" id="dist-slider" min="-180" max="180" value="60"></label>
+                </div>
+            </div>
+
+            <p>
+                $D^2(x)=x^2+(x^2-2)^2$, $D'(x)\propto 2x(2x^2-3)=0$. Minimi in $x=\pm\sqrt{3/2}$, $D_{\min}=\dfrac{\sqrt{7}}{2}$.
+            </p>
+
+            <div class="tip">
+                Per minimizzare distanze, lavora sul <em>quadrato</em>: stesso punto di minimo, derivate più semplici.
+            </div>
+
+            <!-- MINI QUIZ 5 -->
+            <div class="mini-quiz" data-quiz-id="q-pb">
+                <h3>Quiz veloce</h3>
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-text">Dopo aver trovato i punti critici di un problema:</span>
+                    <div class="quiz-options-row">
+                        <label class="quiz-option-mini" data-value="a"><input type="radio" name="q-pb-1" value="a"> Si scrive subito la risposta</label>
+                        <label class="quiz-option-mini" data-value="b"><input type="radio" name="q-pb-1" value="b"> Si guardano solo gli estremi</label>
+                        <label class="quiz-option-mini" data-value="c"><input type="radio" name="q-pb-1" value="c"> Si verifica la natura del punto e si controlla il bordo</label>
+                    </div>
+                </div>
+                <div class="mini-quiz-feedback"></div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE 6: QUIZ FINALE ============ -->
+        <section class="section page hidden" data-index="6">
+            <div class="section-number">6</div>
+            <h2>Quiz finale di ripasso</h2>
+            <p>Sei domande sui tre macro-argomenti. Alla fine il punteggio.</p>
+
+            <div id="quiz-box">
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">1</span>
+                    <span class="q-text">Quale ipotesi <em>non</em> serve per Lagrange?</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="qf1" value="a"> $f$ continua su $[a,b]$</label>
+                        <label class="quiz-option"><input type="radio" name="qf1" value="b"> $f(a)=f(b)$</label>
+                        <label class="quiz-option"><input type="radio" name="qf1" value="c"> $f$ derivabile su $(a,b)$</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-number">2</span>
+                    <span class="q-text">$\displaystyle\lim_{x\to 0}\dfrac{1-\cos x}{x^2}$ vale:</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="qf2" value="a"> $0$</label>
+                        <label class="quiz-option"><input type="radio" name="qf2" value="b"> $1$</label>
+                        <label class="quiz-option"><input type="radio" name="qf2" value="c"> $\dfrac{1}{2}$</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="a">
+                    <span class="q-number">3</span>
+                    <span class="q-text">In $f(x)=x^3$, $x_0=0$ è:</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="qf3" value="a"> Flesso a tangente orizzontale</label>
+                        <label class="quiz-option"><input type="radio" name="qf3" value="b"> Minimo relativo</label>
+                        <label class="quiz-option"><input type="radio" name="qf3" value="c"> Massimo relativo</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">4</span>
+                    <span class="q-text">$f(x)=x^3-3x$: i punti critici sono</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="qf4" value="a"> Solo $x=0$</label>
+                        <label class="quiz-option"><input type="radio" name="qf4" value="b"> $x=\pm 1$ (max in $-1$, min in $+1$)</label>
+                        <label class="quiz-option"><input type="radio" name="qf4" value="c"> $x=\pm\sqrt{3}$</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="c">
+                    <span class="q-number">5</span>
+                    <span class="q-text">Rettangolo di perimetro $40$ con area massima:</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="qf5" value="a"> $5 \times 15$</label>
+                        <label class="quiz-option"><input type="radio" name="qf5" value="b"> $8 \times 12$</label>
+                        <label class="quiz-option"><input type="radio" name="qf5" value="c"> $10 \times 10$ (quadrato)</label>
+                    </div>
+                </div>
+
+                <div class="quiz-question" data-correct="b">
+                    <span class="q-number">6</span>
+                    <span class="q-text">Si ha sicuramente un flesso in $x_0$ quando:</span>
+                    <div class="quiz-options">
+                        <label class="quiz-option"><input type="radio" name="qf6" value="a"> $f''(x_0)=0$</label>
+                        <label class="quiz-option"><input type="radio" name="qf6" value="b"> $f''$ <em>cambia segno</em> in $x_0$</label>
+                        <label class="quiz-option"><input type="radio" name="qf6" value="c"> $f'(x_0)=0$ e $f''(x_0)=0$</label>
+                    </div>
+                </div>
+
+                <div style="text-align:center;">
+                    <button id="btn-submit-quiz">Correggi il quiz</button>
+                </div>
+
+                <div class="quiz-score" id="quiz-score">
+                    <div class="score-value" id="score-val"></div>
+                    <div class="score-label" id="score-label"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGINATION -->
+        <div class="pagination" id="pagination">
+            <button class="page-btn" id="btn-prev">
+                <span class="arrow">&#9664;</span> Precedente
+            </button>
+            <div class="page-center">
+                <label>Argomento:</label>
+                <div class="page-dots" id="page-dots"></div>
+                <input type="number" id="page-input" min="1" max="6" value="1" aria-label="Numero pagina">
+            </div>
+            <button class="page-btn" id="btn-next">
+                Successivo <span class="arrow">&#9654;</span>
+            </button>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>Verifica di Matematica — <strong>ITIS Zuccante</strong>, classe 4IB &mdash; 2026</p>
+        </footer>
+
+    </div><!-- .container -->
+
+    <script src="matematica.js"></script>
+</body>
+</html>

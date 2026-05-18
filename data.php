@@ -93,4 +93,14 @@ $tutorials = [
         'pages'    => 'interattivo',
         'file'     => 'grafi.html',
     ],
+    [
+        'id'       => 9,
+        'title'    => 'Verifica di Matematica — Flessi, Max/Min, Teoremi',
+        'category' => 'math',
+        'level'    => 'medium',
+        'desc'     => 'Teoremi del calcolo differenziale (Rolle, Lagrange, Cauchy, De L\'Hôpital), flessi, problemi di massimo e minimo con grafici interattivi.',
+        'tags'     => ['analisi', 'derivate', 'flessi', 'max/min'],
+        'pages'    => '6 pagine',
+        'file'     => 'matematica.html',
+    ],
 ];
